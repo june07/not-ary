@@ -1,0 +1,53 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/node/tags/
+image: node:lts
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
+services:
+    - docker:dind
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+    paths:
+        - node_modules/
+
+build:pages:
+    image: node:lts
+    stage: build
+    before_script:
+        - apt-get update && apt-get upgrade -y
+        - apt update && apt install jq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget -y
+        - apt-get -f install
+        - apt-get install libappindicator1 -y
+    script:
+        - npm ci
+        - npm run build
+        - mv public public-vue
+        - mv dist public
+        - perl -pi -e "s/dev.not-ary.com/not-ary.com\/\?c=${CI_COMMIT_SHORT_SHA}/" public/site.webmanifest
+        - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
+        - |
+            echo "{ \"build_date\": \"$(date)\", \"commit_sha\": \"$CI_COMMIT_SHORT_SHA\" }" | jq . > public/build-info.json
+        - cp public/index.html public/404.html
+    artifacts:
+        untracked: false
+        expire_in: 30 days
+        paths:
+            - public
+    only:
+        - main
+
+deploy:netlify:
+    image: node:lts
+    stage: deploy
+    script:
+        - npm install --unsafe-perm=true -g netlify-cli
+        - netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod --dir public
+    artifacts:
+        paths:
+            - public
+    only:
+        - main
