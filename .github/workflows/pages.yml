@@ -42,7 +42,7 @@ jobs:
 
       - name: Add build info
         run: |
-          echo "{ \"build_date\": \"$(date)\", \"commit_sha\": \"${{ github.sha }}\" }" > build-info.json
+          echo "{ \"build_date\": \"$(date)\", \"commit_sha\": \"${{ github.sha }}\" }" > dist/build-info.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
