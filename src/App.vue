@@ -1,10 +1,7 @@
 <template>
     <v-app ref="not-ary" :class="{ 'blur': showCredits }" :theme="store.theme">
-        <nav-bar order="-1" v-if="! /nonav/.test($route.name) && mounted"
-            @theme="themeHandler" />
-        <v-navigation-drawer order="2" width="200" floating
-            v-if="! /nonav/.test($route.name) && mounted">
-        </v-navigation-drawer>
+        <nav-bar order="-1" v-if="! /nonav/.test($route.name) && mounted" @theme="themeHandler" />
+        <v-navigation-drawer order="2" width="200" floating v-if="! /nonav/.test($route.name) && mounted"></v-navigation-drawer>
         <v-main>
             <router-view v-slot="{ Component }">
                 <keep-alive>
@@ -12,11 +9,8 @@
                 </keep-alive>
             </router-view>
         </v-main>
-        <v-navigation-drawer order="2" width="200" floating location="right"
-            v-if="! /nonav/.test($route.name) && mounted">
-        </v-navigation-drawer>
-        <nav-footer order="-1" @credits="creditButtonHandler"
-            v-if="! /nonav/.test($route.name) && mounted" />
+        <v-navigation-drawer order="2" width="200" floating location="right" v-if="! /nonav/.test($route.name) && mounted"></v-navigation-drawer>
+        <nav-footer order="-1" @credits="creditButtonHandler" v-if="! /nonav/.test($route.name) && mounted" />
 
         <v-overlay v-model="showCredits" class="d-flex justify-center align-center h-100">
             <div class="d-flex flex-column text-center font-weight-light">
@@ -31,8 +25,7 @@
                     <span class="material-icons-outlined">info</span>
                 </v-col>
                 <v-col cols="10" class="d-flex align-center justify-center">
-                    <span @click="$router.go()" class="font-weight-light" v-bind:class="xsOnly ? 'caption' : ''"
-                        style="cursor: pointer">Reload to update to the newest app version.</span>
+                    <span @click="$router.go()" class="font-weight-light" v-bind:class="xsOnly ? 'caption' : ''" style="cursor: pointer">Reload to update to the newest app version.</span>
                 </v-col>
                 <v-col cols="1" class="d-flex align-center justify-center">
                     <v-btn variant="plain" :size="xsOnly ? 'x-small' : ''" @click="clickHandler"> x </v-btn>
