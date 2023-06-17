@@ -6,12 +6,32 @@
 
         <div class="d-flex justify-center my-8">
             <div class="d-flex flex-column">
-                <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_1" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
-                <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_5" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
-                <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_15" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                <v-tooltip location="start">
+                    <template v-slot:activator="{ props }">
+                        <stripe-buy-button v-bind="props" :buy-button-id="VITE_STRIPE_BUY_ID_1" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                    </template>
+                    <template v-slot:default><img width="300" :src="VITE_STRIPE_BUY_QR_1"></template>
+                </v-tooltip>
+                <v-tooltip location="start">
+                    <template v-slot:activator="{ props }">
+                        <stripe-buy-button v-bind="props" :buy-button-id="VITE_STRIPE_BUY_ID_5" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                    </template>
+                    <template v-slot:default><img width="300" :src="VITE_STRIPE_BUY_QR_5"></template>
+                </v-tooltip>
+                <v-tooltip location="start">
+                    <template v-slot:activator="{ props }">
+                        <stripe-buy-button v-bind="props" :buy-button-id="VITE_STRIPE_BUY_ID_15" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                    </template>
+                    <template v-slot:default><img width="300" :src="VITE_STRIPE_BUY_QR_15"></template>
+                </v-tooltip>
             </div>
             <div class="d-flex flex-column">
-                <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_ONE_TIME" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                <v-tooltip>
+                    <template v-slot:activator="{ props }">
+                        <stripe-buy-button v-bind="props" :buy-button-id="VITE_STRIPE_BUY_ID_ONE_TIME" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
+                    </template>
+                    <template v-slot:default><img width="300" :src="VITE_STRIPE_BUY_QR_ONE_TIME"></template>
+                </v-tooltip>
             </div>
         </div>
 
@@ -43,9 +63,13 @@ import { onMounted } from 'vue'
 const {
     VITE_STRIPE_PUBLISHABLE_KEY,
     VITE_STRIPE_BUY_ID_1,
+    VITE_STRIPE_BUY_QR_1,
     VITE_STRIPE_BUY_ID_5,
+    VITE_STRIPE_BUY_QR_5,
     VITE_STRIPE_BUY_ID_15,
-    VITE_STRIPE_BUY_ID_ONE_TIME
+    VITE_STRIPE_BUY_QR_15,
+    VITE_STRIPE_BUY_ID_ONE_TIME,
+    VITE_STRIPE_BUY_QR_ONE_TIME
 } = import.meta.env
 
 onMounted(() => {
