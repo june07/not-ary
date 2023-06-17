@@ -19,7 +19,7 @@ export const useAppStore = defineStore("app", {
                     totalExamQuestions: 0,
                     submitted: false
                 },
-                totalExamsTaken: {}
+                examsTaken: {}
             }
         }
     }),
@@ -34,7 +34,7 @@ export const useAppStore = defineStore("app", {
             }
         },
         saveScantron() {
-            this.states.ca.totalExamsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
+            this.states.ca.examsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
         }
     },
     persist: true,

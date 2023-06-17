@@ -27,7 +27,7 @@
 
             <div class="question ml-16 mt-8">{{ questions[currentIndex].question }}</div>
             <div class="mb-8 mr-16 text-end"><v-btn class="hint" size="x-small" variant="plain" prepend-icon="menu_book"
-                    @click="overlay = !overlay">show hint</v-btn></div>
+                    @click="overlays.hint = !overlays.hint">show hint</v-btn></div>
 
             <div class="choices">
                 <v-radio-group :model-value="answers[questions[currentIndex].id]">
@@ -37,7 +37,7 @@
             </div>
 
             <div class="d-flex justify-center">
-                <v-btn @click="reset" variant="plain" size="x-small" class="my-auto">reset</v-btn>
+                <v-btn @click="MODE === 'production' ? overlays.reset = !overlays.reset : reset()" variant="plain" size="x-small" class="my-auto">reset</v-btn>
                 <v-btn @click="prev" class="" :disabled="currentIndex < 1">prev</v-btn>
                 <v-btn @click="next" class="" :disabled="currentIndex + 1 === totalExamQuestions">next</v-btn>
                 <v-btn @click="submit" :variant="!finished ? 'plain' : undefined" size="x-small"
@@ -45,9 +45,20 @@
             </div>
         </div>
 
-        <v-overlay v-model="overlay">
+        <v-overlay v-model="overlays.hint">
             <v-container fluid class="d-flex justify-center align-center" style="width: 100vh; height: 100vh">
                 <v-img :src="questions[currentIndex].image" v-click-outside="onclickOutside"></v-img>
+            </v-container>
+        </v-overlay>
+        <v-overlay v-model="overlays.reset" class="d-flex justify-center align-center">
+            <v-container>
+                <v-sheet rounded="lg" class="pa-4 flex-column">
+                    <div class="mb-2 text-center">Reset exam progress?</div>
+                    <div>
+                        <v-btn variant="text" class="mr-2" @click="reset">confirm</v-btn>
+                        <v-btn variant="text" class="ml-2" @click="overlays.reset = false">cancel</v-btn>
+                    </div>
+                </v-sheet>
             </v-container>
         </v-overlay>
     </v-container>
@@ -57,21 +68,26 @@ import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
 import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount } from 'vue'
 
+const { MODE } = import.meta.env
 const { $ghost } = getCurrentInstance().appContext.config.globalProperties
 const store = useAppStore()
-const emit = defineEmits(['finished'])
+const emit = defineEmits(['finished', 'started'])
 const props = defineProps({
     state: {
         type: String,
         default: 'ca'
-    }
+    },
+    start: Boolean
 })
 const choices = computed(() => shuffleArray([
     { right: store.states[props.state].questions[currentIndex.value].options.right },
     ...store.states[props.state].questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
 ]))
 const interval = ref()
-const overlay = ref(false)
+const overlays = ref({
+    hint: false,
+    reset: false
+})
 const handbookURL = computed(() => `https://notary.cdn.sos.${props.state.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[props.state]?.scantron.submitted)
 const finished = computed(() => currentIndex.value === totalExamQuestions.value - 1 && Object.keys(scantron.value.answers).length === totalExamQuestions.value)
@@ -91,13 +107,13 @@ async function update() {
     }
 }
 function onclickOutside() {
-    overlay.value = false
+    overlays.value.hint = false
 }
 function startTimer() {
     interval.value = setInterval(() => store.states[props.state].scantron.timeTotal += 1, 1000)
 }
 function start() {
-    store.states[props.state].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, 45)
+    store.states[props.state].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, MODE === 'production' ? 45 : 3)
     store.states[props.state].scantron.timeStarted = Date.now()
     store.states[props.state].scantron.totalExamQuestions = store.states[props.state].questions.length
     startTimer()
@@ -106,6 +122,8 @@ function markAnswer(answer) {
     store.states[props.state].scantron.answers[questions.value[currentIndex.value].id] = answer
 }
 function reset() {
+    overlays.value.reset = false
+    overlays.value.hint = false
     store.resetScantron()
 }
 function prev() {
@@ -121,7 +139,7 @@ function submit() {
         score[Object.keys(answer)[0]] += 1
         return score
     }, { right: 0, wrong: 0, pass: false, percent: undefined })
-    store.states[props.state].scantron.score.percent = totalExamQuestions.value / store.states[props.state].scantron.score.right * 100
+    store.states[props.state].scantron.score.percent = store.states[props.state].scantron.score.right / totalExamQuestions.value * 100
     if (store.states[props.state].scantron.score.percent > 0.70) {
         store.states[props.state].scantron.score.pass = true
     }
@@ -166,6 +184,10 @@ onMounted(() => {
     update()
     if (store.states[props.state].scantron.timeStarted) {
         startTimer()
+    }
+    if (props.start) {
+        store.resetScantron();
+        emit('started')
     }
 })
 onBeforeUnmount(() => {

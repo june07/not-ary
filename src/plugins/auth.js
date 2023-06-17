@@ -7,8 +7,7 @@ const $auth = createAuth0({
   domain: VITE_AUTH0_DOMAIN,
   clientId: VITE_AUTH0_CLIENTID,
   authorizationParams: {
-    audience: VITE_AUTH0_AUDIENCE,
-    redirect_uri: window.location.origin + "/?returnTo=/my/exams",
+    redirect_uri: window.location.origin + "/",
   },
 });
 
@@ -17,14 +16,13 @@ const signup = async function () {
   $auth.loginWithRedirect({
     authorizationParams: {
       screen_hint: "signup",
-      redirect_uri: window.location.origin + "/?returnTo=/my/exams",
     },
   });
 };
 const login = function (options = { prompt: "none" }) {
   $auth.loginWithRedirect({
     authorizationParams: {
-      redirect_uri: window.location.origin + "/?returnTo=/my/exams",
+        redirect_uri: window.location.origin + "/?returnTo=/my",
       ...options,
     },
   });

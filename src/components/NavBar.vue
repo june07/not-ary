@@ -11,14 +11,12 @@
             Not-Ary.com
         </v-app-bar-title>
         <v-spacer></v-spacer>
+        <v-btn v-if="!smAndDown && isAuthenticated" variant="plain" to="/my/exams" :size="smAndDown ? 'x-small' : 'small'" class="mr-4 text-primary-lighten-3">My Exams</v-btn>
         <v-btn variant="plain" icon size="x-small" id="theme" @click="$emit('theme')">
             <v-icon color="primary-lighten-3" :icon="store.theme === 'light' ? 'light_mode' : 'dark_mode'"></v-icon>
         </v-btn>
         <!-- auth menu start -->
         <div v-if="isAuthenticated">
-            <v-btn v-if="!smAndDown" variant="plain" to="/my/exams" :size="smAndDown ? 'x-small' : 'small'" class="mr-4 text-primary-lighten-3">My
-                Exams</v-btn>
-
             <v-menu offset="50">
                 <template v-slot:activator="{ props }">
                     <v-btn :size="smAndDown ? 'small' : ''" v-bind="props" class="mx-2" :append-icon="isAuthenticated ? 'more_vert' : 'login'">
