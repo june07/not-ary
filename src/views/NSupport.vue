@@ -1,5 +1,5 @@
 <template>
-    <v-container class="d-flex flex-column justify-center" :class="xs ? 'px-0' : ''">
+    <v-container class="d-flex flex-column justify-center" :class="xsAndDown ? 'px-0' : ''">
         <div class="text-h5">Support Us</div>
         <v-divider></v-divider>
         <div class="text-body-2 mt-2">Thank you for your support</div>
@@ -59,6 +59,9 @@
 </template>
 <script setup>
 import { onMounted } from 'vue'
+import { useDisplay } from 'vuetify'
+
+const { xsAndDown } = useDisplay();
 
 const {
     VITE_STRIPE_PUBLISHABLE_KEY,
