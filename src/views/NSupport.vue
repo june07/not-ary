@@ -4,7 +4,7 @@
         <v-divider></v-divider>
         <div class="text-body-2 mt-2">Thank you for your support</div>
 
-        <div class="d-flex my-8">
+        <div class="d-flex justify-center my-8">
             <div class="d-flex flex-column">
                 <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_1" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
                 <stripe-buy-button :buy-button-id="VITE_STRIPE_BUY_ID_5" :publishable-key="VITE_STRIPE_PUBLISHABLE_KEY"></stripe-buy-button>
