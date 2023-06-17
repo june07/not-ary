@@ -8,6 +8,11 @@ const routes = [
         component: () => import('@/views/NHome.vue')
     },
     {
+        path: '/support',
+        name: 'support',
+        component: () => import('@/views/NSupport.vue')
+    },
+    {
         path: '/:catchAll(.*)',
         name: 'catchall',
         component: () => import('@/views/NHome.vue')

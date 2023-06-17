@@ -2,7 +2,7 @@
     <v-container class="h-100 d-flex justify-center" fluid>
         <div v-if="!scantron.timeStarted" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
-                Not-Ary.com hosts the best FREE, open source, and most up-to-date Notary Exam available!
+                Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
             <p class="text-caption">
                 <ul>

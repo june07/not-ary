@@ -26,7 +26,7 @@
 
         <div class="d-flex align-center mt-auto">
             <v-icon class="mr-1" size="x-small">copyright</v-icon>{{ new Date().getFullYear() }}<span
-                class="ml-1 text-uppercase font-weight-thin">Notary Exam</span>
+                class="ml-1 text-uppercase font-weight-thin">Not-Ary.com</span>
         </div>
     </v-footer>
 </template>
@@ -46,7 +46,7 @@ const links = [
     // { name: "Credits", click: () => this.$emit('credits') }
 ]
 const secondaryLinks = [
-    { name: "Support Notary Exam", href: "https://not-ary.com/faq?category=general&id=645969782906c70001e53387" },
+    { name: "Support Not-Ary.com", to: "/support" },
 ]
 const props = defineProps({
     order: String
