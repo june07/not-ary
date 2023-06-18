@@ -36,7 +36,7 @@ const scantrons = computed(() => store.states[store.activeState].examsTaken)
 const right = computed(() => store.states[store.activeState].scantron.score.right)
 const percent = computed(() => store.states[store.activeState].scantron.score.percent)
 const totalExamQuestions = computed(() => store.states[store.activeState].scantron.totalExamQuestions)
-const freeExamsRemaining = computed(() => store.states[store.activeState].freeExamsRemaining)
+const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const store = useAppStore()
 const scantron = computed(() => store.states[store.activeState].scantron)
 

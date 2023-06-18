@@ -93,7 +93,7 @@ const overlays = ref({
     reset: false
 })
 const inProgress = computed(() => store.states[store.activeState].scantron.inProgress)
-const freeExamsRemaining = computed(() => store.states[store.activeState].freeExamsRemaining)
+const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const handbookURL = computed(() => `https://notary.cdn.sos.${store.activeState.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[store.activeState]?.scantron.submitted)
 const finished = computed(() => Object.keys(scantron.value.answers).length === totalExamQuestions.value)
