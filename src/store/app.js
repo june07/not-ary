@@ -6,6 +6,7 @@ export const useAppStore = defineStore("app", {
         theme: 'light',
         activeState: 'ca',
         freeExamsRemaining: 3,
+        showAnswers: false,
         states: {
             ca: {
                 name: 'California',

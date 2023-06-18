@@ -15,6 +15,20 @@
         <v-btn variant="plain" icon size="x-small" id="theme" @click="$emit('theme')">
             <v-icon color="primary-lighten-3" :icon="store.theme === 'light' ? 'light_mode' : 'dark_mode'"></v-icon>
         </v-btn>
+        <v-menu>
+            <template v-slot:activator="{ props }">
+                <v-btn :size="smAndDown ? 'small' : ''" v-bind="props" class="mx-2" append-icon="settings"></v-btn>
+            </template>
+            <v-list nav>
+                <v-list-subheader>settings</v-list-subheader>
+                <v-list-item @click="store.showAnswers = !store.showAnswers">
+                    <v-list-item-title>{{ store.showAnswers ? 'hide answers' : 'show answers' }}</v-list-item-title>
+                    <template v-slot:prepend>
+                        <v-icon color="primary-lighten-3" :icon="store.showAnswers ? 'visibility_off' : 'visibility'"></v-icon>
+                    </template>
+                </v-list-item>
+            </v-list>
+        </v-menu>
         <!-- auth menu start -->
         <div v-if="isAuthenticated">
             <v-menu offset="50">

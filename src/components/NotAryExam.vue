@@ -33,7 +33,10 @@
 
             <div class="choices">
                 <v-radio-group :model-value="answers[questions[currentIndex].id]">
-                    <v-radio v-for="choice in choices" :key="Object.values(choice)[0]" :label="Object.values(choice)[0]" :value="choice" @change="markAnswer(choice)"></v-radio>
+                    <div class="d-flex align-center" v-for="choice in choices" :key="Object.values(choice)[0]">
+                        <v-icon v-if="showAnswers && answers[questions[currentIndex].id]" :color="choice.right ? 'green' : 'red'" :icon="choice.right ? 'check_box' : 'disabled_by_default'"></v-icon>
+                        <v-radio :label="Object.values(choice)[0]" :value="choice" @change="markAnswer(choice)"></v-radio>
+                    </div>
                 </v-radio-group>
             </div>
 
@@ -106,6 +109,7 @@ const overlays = ref({
     reset: false
 })
 const synth = window.speechSynthesis
+const showAnswers = computed(() => store.showAnswers)
 const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const handbookURL = computed(() => `https://notary.cdn.sos.${store.activeState.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[store.activeState]?.scantron.submitted)
