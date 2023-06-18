@@ -35,6 +35,7 @@ export const useAppStore = defineStore("app", {
         },
         saveScantron() {
             this.states.ca.examsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
+            this.states.ca.freeExamsRemaining = Math.max(3 - Object.keys(examsTaken).length, 0)
         }
     },
     persist: true,

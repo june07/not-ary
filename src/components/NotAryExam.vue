@@ -14,7 +14,8 @@
                     <li>Much more...</li>
                 </ul>
             </p>
-            <v-btn @click="start" class="mt-16">start exam</v-btn>
+            <v-btn v-if="freeExamsRemaining || isAuthenticated" @click="start" class="mt-16">start exam</v-btn>
+            <v-btn v-else @click="signup" class="text-capitalize">create free account / sign in</v-btn>
         </div>
         <div v-else>
             <v-row>
@@ -66,9 +67,12 @@
 <script setup>
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
-import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject } from 'vue'
 import { useDisplay } from 'vuetify'
+import { useAuth0 } from '@auth0/auth0-vue'
 
+const { user, isAuthenticated } = useAuth0()
+const signup = inject("signup")
 const { smAndDown } = useDisplay()
 const { MODE } = import.meta.env
 const { $ghost } = getCurrentInstance().appContext.config.globalProperties
@@ -90,6 +94,7 @@ const overlays = ref({
     hint: false,
     reset: false
 })
+const freeExamsRemaining = computed(() => store.states[props.state].freeExamsRemaining)
 const handbookURL = computed(() => `https://notary.cdn.sos.${props.state.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[props.state]?.scantron.submitted)
 const finished = computed(() => Object.keys(scantron.value.answers).length === totalExamQuestions.value)
@@ -141,8 +146,8 @@ function submit() {
         score[Object.keys(answer)[0]] += 1
         return score
     }, { right: 0, wrong: 0, pass: false, percent: undefined })
-    store.states[props.state].scantron.score.percent = store.states[props.state].scantron.score.right / totalExamQuestions.value * 100
-    if (store.states[props.state].scantron.score.percent > 0.70) {
+    store.states[props.state].scantron.score.percent = Number(store.states[props.state].scantron.score.right / totalExamQuestions.value * 100).toFixed(2)
+    if (store.states[props.state].scantron.score.percent >= 70) {
         store.states[props.state].scantron.score.pass = true
     }
     store.saveScantron()

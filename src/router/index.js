@@ -1,5 +1,6 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router';
+import { authGuard } from '@auth0/auth0-vue';
 
 const routes = [
     {
@@ -11,6 +12,12 @@ const routes = [
         path: '/support',
         name: 'support',
         component: () => import('@/views/NSupport.vue')
+    },
+    {
+        path: '/account',
+        name: 'account',
+        component: () => import('@/views/NAccount.vue'),
+        beforeEnter: authGuard
     },
     {
         path: '/:catchAll(.*)',

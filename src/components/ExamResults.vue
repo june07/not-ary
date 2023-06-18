@@ -3,7 +3,7 @@
         <div v-if="scantron.score?.pass">
             <p class="text-h5">🎉Congratulations, you <span class="text-uppercase text-green">passed</span>!</p>
             <p>
-                You got {{ right }} of {{ totalExamQuestions }} correct, for a score of {{ percent === 100 ? '💯' : `${percent.toFixed(2)}` }}% 🔥
+                You got {{ right }} of {{ totalExamQuestions }} correct, for a score of {{ percent === 100 ? '💯' : `${percent}` }}% 🔥
             </p>
         </div>
         <div v-else>
@@ -12,7 +12,7 @@
                 <span v-else>can <a href="#" @click="signup">create a free account</a> for unlimited practice exams</span>
             </p>
             <p>
-                You got {{ right }} of {{ totalExamQuestions }} correct, for a score of {{ percent.toFixed(2) }}%. A score of %70 is
+                You got {{ right }} of {{ totalExamQuestions }} correct, for a score of {{ percent }}%. A score of %70 is
                 required to pass. Review your choices below against the correct answers and retake the practice exam when
                 you're ready!
             </p>
@@ -24,6 +24,9 @@
                     <th class="text-left">
                         Number
                     </th>
+                    <th class="text-left">
+                        Started
+                    </th>s
                     <th class="text-left">
                         Finished
                     </th>
@@ -38,8 +41,9 @@
             <tbody>
                 <tr v-for="(scantron, key, index) in scantrons" :key="key">
                     <td>{{ index + 1 }}</td>
+                    <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
                     <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                    <td>{{ formatTime(scantron.timeFinished - scantron.timeStarted) }}</td>
+                    <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
                     <td>{{ scantron.score.right }}/{{ totalExamQuestions }} ({{ scantron.score.percent }}%)</td>
                 </tr>
             </tbody>
@@ -50,7 +54,7 @@
 </template>
 <script setup>
 import { useAppStore } from '@/store/app'
-import { computed, inject } from 'vue'
+import { computed, inject, onBeforeUnmount } from 'vue'
 
 const emit = defineEmits(['retest'])
 
@@ -59,7 +63,7 @@ const scantrons = computed(() => store.states[props.state].examsTaken)
 const right = computed(() => store.states[props.state].scantron.score.right)
 const percent = computed(() => store.states[props.state].scantron.score.percent)
 const totalExamQuestions = computed(() => store.states[props.state].scantron.totalExamQuestions)
-const freeExamsRemaining = computed(() => Math.max(3 - Object.keys(scantrons).length, 0))
+const freeExamsRemaining = computed(() => store.states[props.state].freeExamsRemaining)
 const store = useAppStore()
 const props = defineProps({
     state: {
@@ -70,6 +74,7 @@ const props = defineProps({
 const scantron = computed(() => store.states[props.state].scantron)
 
 function formatTime(timeInSeconds) {
+    console.log(timeInSeconds)
     const seconds = Math.floor(timeInSeconds % 60)
     const minutes = Math.floor((timeInSeconds % 3600) / 60)
     const formattedSeconds = String(seconds).padStart(2, '0')
@@ -77,4 +82,5 @@ function formatTime(timeInSeconds) {
 
     return `${formattedMinutes}m:${formattedSeconds}s`
 }
+onBeforeUnmount(() => emit('retest'))
 </script>
