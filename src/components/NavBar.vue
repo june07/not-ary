@@ -11,13 +11,14 @@
             Not-Ary.com
         </v-app-bar-title>
         <v-spacer></v-spacer>
-        <v-btn v-if="!smAndDown && isAuthenticated" variant="plain" to="/account" :size="smAndDown ? 'x-small' : 'small'" class="mr-4 text-primary-lighten-3">Account</v-btn>
         <v-btn variant="plain" icon size="x-small" id="theme" @click="$emit('theme')">
             <v-icon color="primary-lighten-3" :icon="store.theme === 'light' ? 'light_mode' : 'dark_mode'"></v-icon>
         </v-btn>
         <v-menu>
             <template v-slot:activator="{ props }">
-                <v-btn :size="smAndDown ? 'small' : ''" v-bind="props" class="mx-2" append-icon="settings"></v-btn>
+                <v-btn v-bind="props" variant="plain" icon size="x-small">
+                    <v-icon color="primary-lighten-3" icon="settings"></v-icon>
+                </v-btn>
             </template>
             <v-list nav>
                 <v-list-subheader>settings</v-list-subheader>
@@ -31,17 +32,23 @@
         </v-menu>
         <!-- auth menu start -->
         <div v-if="isAuthenticated">
-            <v-menu offset="50">
+            <v-menu>
                 <template v-slot:activator="{ props }">
                     <v-btn :size="smAndDown ? 'small' : ''" v-bind="props" class="mx-2" :append-icon="isAuthenticated ? 'more_vert' : 'login'">
-                        <v-avatar style="border-radius:4px" tile>
+                        <v-avatar size="small">
                             <v-img contain v-if="!smAndDown" :src="user.picture" :alt="user.name" />
                         </v-avatar>
                     </v-btn>
                 </template>
                 <v-list nav>
                     <v-list-subheader>Signed in as <span class="font-weight-bold">{{ user.name }}</span></v-list-subheader>
-                    <v-list-item v-if="isAuthenticated" @click="logout">
+                    <v-list-item to="/account">
+                        <v-list-item-title>Account</v-list-item-title>
+                        <template v-slot:prepend>
+                            <v-icon color="primary-lighten-3" icon="manage_accounts"></v-icon>
+                        </template>
+                    </v-list-item>
+                    <v-list-item @click="logout">
                         <v-list-item-title>Sign Out</v-list-item-title>
                         <template v-slot:prepend>
                             <v-icon color="primary-lighten-3" icon="logout"></v-icon>
