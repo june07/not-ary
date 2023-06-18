@@ -7,14 +7,13 @@
             </p>
         </div>
         <div v-else>
-            <p>Don't worry, even though you didn't pass the {{ store.states[store.activeState].name }} Notary Practice Exam, you
-                <span v-if="freeExamsRemaining">still have {{ freeExamsRemaining }} free practice exams</span>
-                <span v-else>can <a href="#" @click="signup">create a free account</a> for unlimited practice exams</span>
-            </p>
-            <p>
-                You got {{ right }} of {{ totalExamQuestions }} correct, for a score of {{ percent }}%. A score of %70 is
-                required to pass. Review your choices below against the correct answers and retake the practice exam when
+            <p class="mb-4">
+                A score of 70% is required to pass and you got {{ right }} of {{ totalExamQuestions }} correct, for a score of <span class="text-red">{{ percent }}%</span>. Review your choices below against the correct answers and retake the practice exam when
                 you're ready!
+            </p>
+            <p>And don't worry, even though you didn't pass the {{ store.states[store.activeState].name }} Notary Practice Exam, you
+                <span v-if="freeExamsRemaining">still have <span class="font-weight-bold">unlimited FREE</span> practice exams!</span>
+                <span v-else>can <a href="#" @click="signup">create a free account</a> for unlimited practice exams</span>
             </p>
         </div>
 
