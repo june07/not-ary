@@ -3,14 +3,14 @@
         <div class="text-h5 mb-8">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
         <div v-if="!scantron.timeStarted && !store.states[store.activeState].scantron.timeFinished" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
-                Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
+                Not-Ary.com has the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
             <p class="text-caption">
             <ul>
                 <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
-                <li>Easy to reference, highlighted snippets from the handbook for each question</li>
+                <li>Easy to reference, highlighted, text-to-speech snippets from the handbook for each question</li>
                 <li>Take the exam 3 times for zero cost without registering, and unlimited times with FREE registration</li>
-                <li>Timed exam just like the real thing</li>
+                <li>Timed exam just like the real thing so you can measure your progress</li>
                 <li>See correct answers as you go or wait until the end</li>
                 <li>Much more...</li>
             </ul>
@@ -46,8 +46,12 @@
         </div>
 
         <v-overlay v-model="overlays.hint" class="d-flex justify-center align-center">
-            <v-sheet rounded="lg" class="pa-2" v-click-outside="onclickOutside">
-                <v-img :width="smAndDown ? 300 : 800" :src="questions[currentIndex].image"></v-img>
+            <v-sheet rounded="lg" class="pa-2" v-click-outside="onclickOutside" :width="smAndDown ? 300 : 800">
+                <div class="ma-4 d-flex">
+                    <v-icon icon="quiz" class="mr-4"></v-icon>
+                    <div id="overlay-question">{{ questions[currentIndex].question }}</div>
+                </div>
+                <v-img :src="questions[currentIndex].image"></v-img>
                 <div class="d-flex align-center text-no-wrap">
                     <v-btn variant="text" size="x-small" @click="listen('question')" :disabled="synth.speaking" prepend-icon="hearing">question</v-btn>
                     <v-btn variant="text" size="x-small" @click="listen" :disabled="synth.speaking || !questions[currentIndex].callout" prepend-icon="hearing">answer</v-btn>
@@ -202,10 +206,25 @@ function formatTimer(timeInSeconds) {
 
     return `${formattedMinutes}:${formattedSeconds}`
 }
+const highlight = (text, from, to) => {
+  let replacement = highlightBackground(text.slice(from, to))
+  return text.substring(0, from) + replacement + text.substring(to)
+}
+const highlightBackground = sample => `<span style="font-weight: bold">${sample}</span>`
 function listen(text) {
     const { question, callout } = questions.value[currentIndex.value]
+    const utterance = new SpeechSynthesisUtterance(text === 'question' ? question : callout);
+    const originalText = document.querySelector('#overlay-question').innerText
 
-    synth.speak(new SpeechSynthesisUtterance(text === 'question' ? question : callout))
+    if (text === 'question') {
+        // callout is an image that has been pre-highlighted.
+        utterance.addEventListener('boundary', event => {
+            const { charIndex, charLength } = event
+            document.querySelector('#overlay-question').innerHTML = highlight(originalText, charIndex, charIndex + charLength)
+        })
+    }
+
+    synth.speak(utterance)
 }
 onMounted(() => {
     update()
