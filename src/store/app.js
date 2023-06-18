@@ -20,7 +20,6 @@ export const useAppStore = defineStore("app", {
                     score: undefined,
                     totalExamQuestions: 0,
                     submitted: false,
-                    inProgress: false
                 },
                 examsTaken: {}
             }
@@ -36,8 +35,7 @@ export const useAppStore = defineStore("app", {
                 currentIndex: 0,
                 score: undefined,
                 totalExamQuestions: 0,
-                submitted: false,
-                inProgress: false
+                submitted: false
             }
         },
         saveScantron() {

@@ -1,7 +1,7 @@
 <template>
     <v-container class="h-100 d-flex flex-column align-center" fluid>
         <div class="text-h5 mb-8">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
-        <div v-if="!scantron.timeStarted && !inProgress" class="d-flex flex-column justify-center align-center">
+        <div v-if="!scantron.timeStarted && !store.states[store.activeState].scantron.timeFinished" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
                 Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
@@ -92,7 +92,6 @@ const overlays = ref({
     hint: false,
     reset: false
 })
-const inProgress = computed(() => store.states[store.activeState].scantron.inProgress)
 const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const handbookURL = computed(() => `https://notary.cdn.sos.${store.activeState.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[store.activeState]?.scantron.submitted)
@@ -120,7 +119,6 @@ function startTimer() {
         clearInterval(interval.value)
     }
     interval.value = setInterval(() => store.states[store.activeState].scantron.timeTotal += 1, 1000)
-    store.states[store.activeState].scantron.inProgress = true;
 }
 function start() {
     store.states[store.activeState].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, MODE === 'production' ? 45 : 3)
@@ -194,8 +192,10 @@ function formatTimer(timeInSeconds) {
 }
 onMounted(() => {
     update()
-    if (store.states[store.activeState].scantron.timeStarted) {
+    if (store.states[store.activeState].scantron.timeStarted && !store.states[store.activeState].scantron.timeFinished) {
         startTimer()
+    } else {
+        emit('finished')
     }
     if (props.reset) {
         reset()
