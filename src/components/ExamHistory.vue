@@ -1,35 +1,38 @@
 <template>
     <v-container class="h-100 d-flex justify-center align-center">
-        <v-table v-if="Object.values(scantrons).length" class="mt-16">
-            <thead>
-                <tr>
-                    <th class="text-left">
-                        Exam
-                    </th>
-                    <th class="text-left">
-                        Started
-                    </th>
-                    <th class="text-left">
-                        Finished
-                    </th>
-                    <th class="text-left">
-                        Time
-                    </th>
-                    <th class="text-left">
-                        Score
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(scantron, key, index) in scantrons" :key="key">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                    <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                    <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
-                    <td>{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
-                </tr>
-            </tbody>
-        </v-table>
+        <v-sheet v-if="Object.values(scantrons).length" class="mt-16">
+            <div class="text-overline ml-n16 d-flex align-center text-no-wrap">exam history<v-divider class="ml-2"></v-divider></div>
+            <v-table>
+                <thead>
+                    <tr>
+                        <th class="text-left">
+                            Exam
+                        </th>
+                        <th class="text-left">
+                            Started
+                        </th>
+                        <th class="text-left">
+                            Finished
+                        </th>
+                        <th class="text-left">
+                            Time
+                        </th>
+                        <th class="text-left">
+                            Score
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(scantron, key, index) in scantrons" :key="key">
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+                        <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
+                        <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
+                        <td>{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
+                    </tr>
+                </tbody>
+            </v-table>
+        </v-sheet>
         <div v-else>
             <v-btn to="/">Start your first test exam</v-btn>
         </div>
