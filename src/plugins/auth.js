@@ -7,7 +7,7 @@ const $auth = createAuth0({
     domain: VITE_AUTH0_DOMAIN,
     clientId: VITE_AUTH0_CLIENTID,
     authorizationParams: {
-        redirect_uri: window.location.origin + "/",
+        redirect_uri: window.location.origin,
     },
 })
 
