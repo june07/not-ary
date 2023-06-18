@@ -1,6 +1,6 @@
 <template>
-    <v-container class="d-flex flex-column justify-center align-center">
-        <v-table class="mt-16">
+    <v-container class="h-100 d-flex justify-center align-center">
+        <v-table v-if="Object.values(scantrons).length" class="mt-16">
             <thead>
                 <tr>
                     <th class="text-left">
@@ -26,10 +26,13 @@
                     <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
                     <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
                     <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
-                    <td>{{ scantron.score.right }}/{{ totalExamQuestions }} ({{ scantron.score.percent }}%)</td>
+                    <td>{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
                 </tr>
             </tbody>
         </v-table>
+        <div v-else>
+            <v-btn to="/">Start your first test exam</v-btn>
+        </div>
     </v-container>
 </template>
 <script setup>

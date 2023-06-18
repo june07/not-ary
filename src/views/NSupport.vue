@@ -60,7 +60,9 @@
                 Your donation, no matter the size, will make a significant impact in supporting the growth and development of Not-ary.com. I am grateful for your support in our mission to provide valuable resources to aspiring notaries.</p>
             <p class="my-8">
                 Thank you for being a part of the Not-ary.com community!</p>
-            <p class="my-8">Best regards,</p>
+            <p class="my-8">Best regards,<br>
+                <icon-base iconName="signature" height="100" width="150" viewBox="150 0 100 200"><icon-signature></icon-signature></icon-base>
+            </p>
             <p class="my-2">Adrian Wardell</p>
             <p class="my-2">Founder, Not-ary.com</p>
             </p>
@@ -70,6 +72,9 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
+
+import IconBase from '../components/IconBase.vue'
+import IconSignature from '../components/IconSignature.vue'
 
 const { smAndDown } = useDisplay()
 
