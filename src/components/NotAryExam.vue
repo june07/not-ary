@@ -1,5 +1,6 @@
 <template>
-    <v-container class="h-100 d-flex justify-center" fluid>
+    <v-container class="h-100 d-flex flex-column align-center" fluid>
+        <div class="text-h5 mb-8">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
         <div v-if="!scantron.timeStarted && !inProgress" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
                 Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
@@ -71,6 +72,7 @@ import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject, 
 import { useDisplay } from 'vuetify'
 import { useAuth0 } from '@auth0/auth0-vue'
 
+const year = (new Date()).getFullYear()
 const { user, isAuthenticated } = useAuth0()
 const signup = inject("signup")
 const { smAndDown } = useDisplay()

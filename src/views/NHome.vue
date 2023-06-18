@@ -1,6 +1,5 @@
 <template>
-    <v-container class="d-flex justify-center fill-height" :class="xs ? 'px-0' : ''">
-        <div class="text-h5">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
+    <v-container class="d-flex justify-center fill-height" :class="smAndDown ? 'px-0' : ''">
         <not-ary-exam v-if="!finished" @finished="finished = true" @started="start = false" :reset="reset"></not-ary-exam>
         <exam-results v-else @retest="retest"></exam-results>
     </v-container>
@@ -16,9 +15,7 @@ import ExamResults from '../components/ExamResults.vue'
 const reset = ref(false)
 const start = ref(false)
 const finished = ref(false)
-const store = useAppStore()
-const { xs } = useDisplay()
-const year = (new Date()).getFullYear()
+const { smAndDown } = useDisplay()
 
 function retest() {
     finished.value = false

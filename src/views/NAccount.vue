@@ -1,5 +1,6 @@
 <template>
-    <v-container class="d-flex justify-center fill-height" :class="smAndDown ? 'px-0' : ''">
+    <v-container class="h-100 d-flex flex-column align-center" :class="smAndDown ? 'px-0' : ''">
+        <div class="text-h5 mb-8">Account</div>
         <exam-history></exam-history>
     </v-container>
 </template>

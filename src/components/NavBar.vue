@@ -7,7 +7,7 @@
                 </icon-base>
             </div>
         </template>
-        <v-app-bar-title @click="$router.push('/')" class="font-italic font-weight-light">
+        <v-app-bar-title @click="$router.push('/')" style="cursor: pointer" class="font-italic font-weight-light">
             Not-Ary.com
         </v-app-bar-title>
         <v-spacer></v-spacer>
