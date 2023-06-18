@@ -48,8 +48,12 @@
         <v-overlay v-model="overlays.hint" class="d-flex justify-center align-center">
             <v-sheet rounded="lg" class="pa-2" v-click-outside="onclickOutside">
                 <v-img :width="smAndDown ? 300 : 800" :src="questions[currentIndex].image"></v-img>
-                <v-btn variant="text" size="x-small" @click="listen('question')" prepend-icon="hearing">question</v-btn>
-                <v-btn variant="text" size="x-small" @click="listen" prepend-icon="hearing">answer</v-btn>
+                <div class="d-flex align-center text-no-wrap">
+                    <v-btn variant="text" size="x-small" @click="listen('question')" :disabled="synth.speaking" prepend-icon="hearing">question</v-btn>
+                    <v-btn variant="text" size="x-small" @click="listen" :disabled="synth.speaking || !questions[currentIndex].callout" prepend-icon="hearing">answer</v-btn>
+                    <v-progress-linear indeterminate class="speaking-progress mt-1" height="1" color="primary-lighten-3" v-if="synth.speaking && !smAndDown"></v-progress-linear>
+                </div>
+                <v-progress-linear indeterminate class="speaking-progress mt-1" height="1" color="primary-lighten-3" v-if="synth.speaking && smAndDown"></v-progress-linear>
             </v-sheet>
         </v-overlay>
         <v-overlay v-model="overlays.reset" class="d-flex justify-center align-center">
@@ -65,6 +69,11 @@
         </v-overlay>
     </v-container>
 </template>
+<style>
+.speaking-progress {
+    max-width: 50%;
+}
+</style>
 <script setup>
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
@@ -92,6 +101,7 @@ const overlays = ref({
     hint: false,
     reset: false
 })
+const synth = window.speechSynthesis
 const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const handbookURL = computed(() => `https://notary.cdn.sos.${store.activeState.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[store.activeState]?.scantron.submitted)
@@ -193,7 +203,6 @@ function formatTimer(timeInSeconds) {
     return `${formattedMinutes}:${formattedSeconds}`
 }
 function listen(text) {
-    const synth = window.speechSynthesis
     const { question, callout } = questions.value[currentIndex.value]
 
     synth.speak(new SpeechSynthesisUtterance(text === 'question' ? question : callout))
