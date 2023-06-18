@@ -45,10 +45,10 @@
             </div>
         </div>
 
-        <v-overlay v-model="overlays.hint">
-            <v-container fluid class="d-flex justify-center align-center" style="width: 100vh; height: 100vh">
-                <v-img :src="questions[currentIndex].image" v-click-outside="onclickOutside"></v-img>
-            </v-container>
+        <v-overlay v-model="overlays.hint" class="d-flex justify-center align-center">
+            <v-sheet rounded="lg" class="pa-2">
+                <v-img :width="smAndDown ? 300 : 800" :src="questions[currentIndex].image" v-click-outside="onclickOutside"></v-img>
+            </v-sheet>
         </v-overlay>
         <v-overlay v-model="overlays.reset" class="d-flex justify-center align-center">
             <v-container>
@@ -67,7 +67,9 @@
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
 import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount } from 'vue'
+import { useDisplay } from 'vuetify'
 
+const { smAndDown } = useDisplay()
 const { MODE } = import.meta.env
 const { $ghost } = getCurrentInstance().appContext.config.globalProperties
 const store = useAppStore()
@@ -90,7 +92,7 @@ const overlays = ref({
 })
 const handbookURL = computed(() => `https://notary.cdn.sos.${props.state.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
 const submitted = computed(() => store.states[props.state]?.scantron.submitted)
-const finished = computed(() => currentIndex.value === totalExamQuestions.value - 1 && Object.keys(scantron.value.answers).length === totalExamQuestions.value)
+const finished = computed(() => Object.keys(scantron.value.answers).length === totalExamQuestions.value)
 const totalExamQuestions = computed(() => store.states[props.state]?.scantron.totalExamQuestions)
 const currentIndex = computed(() => store.states[props.state]?.scantron.currentIndex)
 const answers = computed(() => store.states[props.state]?.scantron.answers)
