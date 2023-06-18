@@ -38,8 +38,8 @@ class GhostPlugin {
             
             return posts.map(post => ({
                 id: post.id,
+                title: post.title,
                 image: post.feature_image,
-                q: post.title,
                 html: post.html
             }))
         } catch (err) {

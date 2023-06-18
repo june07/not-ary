@@ -6,14 +6,14 @@
                 Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
             <p class="text-caption">
-                <ul>
-                    <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
-                    <li>Easy to reference, highlighted snippets from the handbook for each question</li>
-                    <li>Take the exam 3 times for zero cost without registering, and unlimited times with FREE registration</li>
-                    <li>Timed exam just like the real thing</li>
-                    <li>See correct answers as you go or wait until the end</li>
-                    <li>Much more...</li>
-                </ul>
+            <ul>
+                <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
+                <li>Easy to reference, highlighted snippets from the handbook for each question</li>
+                <li>Take the exam 3 times for zero cost without registering, and unlimited times with FREE registration</li>
+                <li>Timed exam just like the real thing</li>
+                <li>See correct answers as you go or wait until the end</li>
+                <li>Much more...</li>
+            </ul>
             </p>
             <v-btn v-if="freeExamsRemaining || isAuthenticated" @click="start" class="mt-16">start exam</v-btn>
             <v-btn v-else @click="signup" class="text-capitalize">create free account / sign in</v-btn>
@@ -27,14 +27,13 @@
             <v-progress-linear max="3600" v-model="timer"></v-progress-linear>
             <v-progress-linear :max="totalExamQuestions" v-model="progress" color="green"></v-progress-linear>
 
+            <div v-if="MODE !== 'production'">{{ questions[currentIndex].title }}</div>
             <div class="question ml-16 mt-8">{{ questions[currentIndex].question }}</div>
-            <div class="mb-8 mr-16 text-end"><v-btn class="hint" size="x-small" variant="plain" prepend-icon="menu_book"
-                    @click="overlays.hint = !overlays.hint">show hint</v-btn></div>
+            <div class="mb-8 mr-16 text-end"><v-btn class="hint" size="x-small" variant="plain" prepend-icon="menu_book" @click="overlays.hint = !overlays.hint">show hint</v-btn></div>
 
             <div class="choices">
                 <v-radio-group :model-value="answers[questions[currentIndex].id]">
-                    <v-radio v-for="choice in choices" :key="Object.values(choice)[0]" :label="Object.values(choice)[0]"
-                        :value="choice" @change="markAnswer(choice)"></v-radio>
+                    <v-radio v-for="choice in choices" :key="Object.values(choice)[0]" :label="Object.values(choice)[0]" :value="choice" @change="markAnswer(choice)"></v-radio>
                 </v-radio-group>
             </div>
 
@@ -42,14 +41,15 @@
                 <v-btn @click="MODE === 'production' ? overlays.reset = !overlays.reset : reset()" variant="plain" size="x-small" class="my-auto">reset</v-btn>
                 <v-btn @click="prev" class="" :disabled="currentIndex < 1">prev</v-btn>
                 <v-btn @click="next" class="" :disabled="currentIndex + 1 === totalExamQuestions">next</v-btn>
-                <v-btn @click="submit" :variant="!finished ? 'plain' : undefined" size="x-small"
-                    :disabled="!finished || submitted" class="my-auto ml-2">submit</v-btn>
+                <v-btn @click="submit" :variant="!finished ? 'plain' : undefined" size="x-small" :disabled="!finished || submitted" class="my-auto ml-2">submit</v-btn>
             </div>
         </div>
 
         <v-overlay v-model="overlays.hint" class="d-flex justify-center align-center">
-            <v-sheet rounded="lg" class="pa-2">
-                <v-img :width="smAndDown ? 300 : 800" :src="questions[currentIndex].image" v-click-outside="onclickOutside"></v-img>
+            <v-sheet rounded="lg" class="pa-2" v-click-outside="onclickOutside">
+                <v-img :width="smAndDown ? 300 : 800" :src="questions[currentIndex].image"></v-img>
+                <v-btn variant="text" size="x-small" @click="listen('question')" prepend-icon="hearing">question</v-btn>
+                <v-btn variant="text" size="x-small" @click="listen" prepend-icon="hearing">answer</v-btn>
             </v-sheet>
         </v-overlay>
         <v-overlay v-model="overlays.reset" class="d-flex justify-center align-center">
@@ -174,12 +174,14 @@ function parse(data) {
 
     return {
         id: data.id,
+        title: data.title,
         question: $('.kg-toggle-heading-text').text(),
         options: {
             wrong: $('.kg-toggle-content > ul > li').filter((index, el) => !$(el).find('strong').length).get().map(el => $(el).text()),
             right: $('.kg-toggle-content > ul > li > strong > em').text()
         },
-        image: $('img').attr('src')
+        image: $('img').attr('src'),
+        callout: $('.kg-callout-text').text()
     }
 }
 function formatTimer(timeInSeconds) {
@@ -190,11 +192,17 @@ function formatTimer(timeInSeconds) {
 
     return `${formattedMinutes}:${formattedSeconds}`
 }
+function listen(text) {
+    const synth = window.speechSynthesis
+    const { question, callout } = questions.value[currentIndex.value]
+
+    synth.speak(new SpeechSynthesisUtterance(text === 'question' ? question : callout))
+}
 onMounted(() => {
     update()
     if (store.states[store.activeState].scantron.timeStarted && !store.states[store.activeState].scantron.timeFinished) {
         startTimer()
-    } else {
+    } else if (store.states[store.activeState].scantron.score) {
         emit('finished')
     }
     if (props.reset) {
