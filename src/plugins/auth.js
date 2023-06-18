@@ -22,7 +22,7 @@ const signup = async function () {
 const login = function (options = { prompt: "none" }) {
     $auth.loginWithRedirect({
         authorizationParams: {
-            redirect_uri: window.location.origin + "/?returnTo=/my",
+            redirect_uri: window.location.origin + "/?returnTo=/account",
             ...options,
         },
     })

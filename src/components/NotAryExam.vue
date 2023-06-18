@@ -1,6 +1,6 @@
 <template>
     <v-container class="h-100 d-flex justify-center" fluid>
-        <div v-if="!scantron.timeStarted" class="d-flex flex-column justify-center align-center">
+        <div v-if="!scantron.timeStarted && !inProgress" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
                 Not-Ary.com hosts the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
@@ -67,7 +67,7 @@
 <script setup>
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
-import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject } from 'vue'
+import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject, watch } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useAuth0 } from '@auth0/auth0-vue'
 
@@ -77,78 +77,81 @@ const { smAndDown } = useDisplay()
 const { MODE } = import.meta.env
 const { $ghost } = getCurrentInstance().appContext.config.globalProperties
 const store = useAppStore()
-const emit = defineEmits(['finished', 'started'])
+const emit = defineEmits(['finished', 'started', 'reset'])
 const props = defineProps({
-    state: {
-        type: String,
-        default: 'ca'
-    },
-    start: Boolean
+    reset: Boolean
 })
 const choices = computed(() => shuffleArray([
-    { right: store.states[props.state].questions[currentIndex.value].options.right },
-    ...store.states[props.state].questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
+    { right: store.states[store.activeState].questions[currentIndex.value].options.right },
+    ...store.states[store.activeState].questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
 ]))
 const interval = ref()
 const overlays = ref({
     hint: false,
     reset: false
 })
-const freeExamsRemaining = computed(() => store.states[props.state].freeExamsRemaining)
-const handbookURL = computed(() => `https://notary.cdn.sos.${props.state.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
-const submitted = computed(() => store.states[props.state]?.scantron.submitted)
+const inProgress = computed(() => store.states[store.activeState].scantron.inProgress)
+const freeExamsRemaining = computed(() => store.states[store.activeState].freeExamsRemaining)
+const handbookURL = computed(() => `https://notary.cdn.sos.${store.activeState.toLocaleLowerCase()}.gov/forms/notary-handbook-current.pdf`)
+const submitted = computed(() => store.states[store.activeState]?.scantron.submitted)
 const finished = computed(() => Object.keys(scantron.value.answers).length === totalExamQuestions.value)
-const totalExamQuestions = computed(() => store.states[props.state]?.scantron.totalExamQuestions)
-const currentIndex = computed(() => store.states[props.state]?.scantron.currentIndex)
-const answers = computed(() => store.states[props.state]?.scantron.answers)
-const timer = computed(() => store.states[props.state].scantron.timeTotal)
-const scantron = computed(() => store.states[props.state].scantron)
-const progress = computed(() => Object.keys(store.states[props.state]?.scantron.answers).length)
-const data = computed(() => store.states[props.state]?.data)
-const lastUpdate = computed(() => store.states[props.state]?.lastUpdate)
-const questions = computed(() => store.states[props.state]?.questions)
+const totalExamQuestions = computed(() => store.states[store.activeState]?.scantron.totalExamQuestions)
+const currentIndex = computed(() => store.states[store.activeState]?.scantron.currentIndex)
+const answers = computed(() => store.states[store.activeState]?.scantron.answers)
+const timer = computed(() => store.states[store.activeState].scantron.timeTotal)
+const scantron = computed(() => store.states[store.activeState].scantron)
+const progress = computed(() => Object.keys(store.states[store.activeState]?.scantron.answers).length)
+const data = computed(() => store.states[store.activeState]?.data)
+const lastUpdate = computed(() => store.states[store.activeState]?.lastUpdate)
+const questions = computed(() => store.states[store.activeState]?.questions)
 async function update() {
     if (import.meta.env.mode !== 'production' || !data.value || (lastUpdate.value + 86_400_000) < Date.now()) {
-        store.states[props.state].lastUpdate = Date.now()
-        store.states[props.state].data = await $ghost.getQuestions(props.state)
+        store.states[store.activeState].lastUpdate = Date.now()
+        store.states[store.activeState].data = await $ghost.getQuestions(store.activeState)
     }
 }
 function onclickOutside() {
     overlays.value.hint = false
 }
 function startTimer() {
-    interval.value = setInterval(() => store.states[props.state].scantron.timeTotal += 1, 1000)
+    if (interval.value) {
+        clearInterval(interval.value)
+    }
+    interval.value = setInterval(() => store.states[store.activeState].scantron.timeTotal += 1, 1000)
+    store.states[store.activeState].scantron.inProgress = true;
 }
 function start() {
-    store.states[props.state].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, MODE === 'production' ? 45 : 3)
-    store.states[props.state].scantron.timeStarted = Date.now()
-    store.states[props.state].scantron.totalExamQuestions = store.states[props.state].questions.length
+    store.states[store.activeState].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, MODE === 'production' ? 45 : 3)
+    store.states[store.activeState].scantron.timeStarted = Date.now()
+    store.states[store.activeState].scantron.totalExamQuestions = store.states[store.activeState].questions.length
     startTimer()
+    emit('started')
 }
 function markAnswer(answer) {
-    store.states[props.state].scantron.answers[questions.value[currentIndex.value].id] = answer
+    store.states[store.activeState].scantron.answers[questions.value[currentIndex.value].id] = answer
 }
 function reset() {
     overlays.value.reset = false
     overlays.value.hint = false
     store.resetScantron()
+    emit('reset')
 }
 function prev() {
-    store.states[props.state].scantron.currentIndex -= 1
+    store.states[store.activeState].scantron.currentIndex -= 1
 }
 function next() {
-    store.states[props.state].scantron.currentIndex += 1
+    store.states[store.activeState].scantron.currentIndex += 1
 }
 function submit() {
     clearInterval(interval.value)
-    store.states[props.state].scantron.timeFinished = Date.now()
-    store.states[props.state].scantron.score = Object.values(store.states[props.state].scantron.answers).reduce((score, answer) => {
+    store.states[store.activeState].scantron.timeFinished = Date.now()
+    store.states[store.activeState].scantron.score = Object.values(store.states[store.activeState].scantron.answers).reduce((score, answer) => {
         score[Object.keys(answer)[0]] += 1
         return score
     }, { right: 0, wrong: 0, pass: false, percent: undefined })
-    store.states[props.state].scantron.score.percent = Number(store.states[props.state].scantron.score.right / totalExamQuestions.value * 100).toFixed(2)
-    if (store.states[props.state].scantron.score.percent >= 70) {
-        store.states[props.state].scantron.score.pass = true
+    store.states[store.activeState].scantron.score.percent = Number(store.states[store.activeState].scantron.score.right / totalExamQuestions.value * 100).toFixed(2)
+    if (store.states[store.activeState].scantron.score.percent >= 70) {
+        store.states[store.activeState].scantron.score.pass = true
     }
     store.saveScantron()
     submitted.value = true
@@ -189,12 +192,11 @@ function formatTimer(timeInSeconds) {
 }
 onMounted(() => {
     update()
-    if (store.states[props.state].scantron.timeStarted) {
+    if (store.states[store.activeState].scantron.timeStarted) {
         startTimer()
     }
-    if (props.start) {
-        store.resetScantron();
-        emit('started')
+    if (props.reset) {
+        reset()
     }
 })
 onBeforeUnmount(() => {

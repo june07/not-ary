@@ -11,7 +11,7 @@
             Not-Ary.com
         </v-app-bar-title>
         <v-spacer></v-spacer>
-        <v-btn v-if="!smAndDown && isAuthenticated" variant="plain" to="/my/exams" :size="smAndDown ? 'x-small' : 'small'" class="mr-4 text-primary-lighten-3">My Exams</v-btn>
+        <v-btn v-if="!smAndDown && isAuthenticated" variant="plain" to="/account" :size="smAndDown ? 'x-small' : 'small'" class="mr-4 text-primary-lighten-3">Account</v-btn>
         <v-btn variant="plain" icon size="x-small" id="theme" @click="$emit('theme')">
             <v-icon color="primary-lighten-3" :icon="store.theme === 'light' ? 'light_mode' : 'dark_mode'"></v-icon>
         </v-btn>

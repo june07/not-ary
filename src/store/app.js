@@ -4,6 +4,7 @@ import { defineStore } from "pinia"
 export const useAppStore = defineStore("app", {
     state: () => ({
         theme: 'light',
+        activeState: 'ca',
         states: {
             ca: {
                 name: 'California',
@@ -17,7 +18,8 @@ export const useAppStore = defineStore("app", {
                     currentIndex: 0,
                     score: undefined,
                     totalExamQuestions: 0,
-                    submitted: false
+                    submitted: false,
+                    inProgress: false
                 },
                 examsTaken: {}
             }
@@ -25,17 +27,21 @@ export const useAppStore = defineStore("app", {
     }),
     actions: {
         resetScantron() {
-            this.states.ca.scantron = {
+            this.states[this.activeState].scantron = {
                 timeStarted: undefined,
                 timeFinished: undefined,
                 timeTotal: 0,
                 answers: {},
-                currentIndex: 0
+                currentIndex: 0,
+                score: undefined,
+                totalExamQuestions: 0,
+                submitted: false,
+                inProgress: false
             }
         },
         saveScantron() {
             this.states.ca.examsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
-            this.states.ca.freeExamsRemaining = Math.max(3 - Object.keys(examsTaken).length, 0)
+            this.states.ca.freeExamsRemaining = Math.max(3 - Object.keys(this.states[this.activeState].examsTaken).length, 0)
         }
     },
     persist: true,

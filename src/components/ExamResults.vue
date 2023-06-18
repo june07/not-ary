@@ -7,7 +7,7 @@
             </p>
         </div>
         <div v-else>
-            <p>Don't worry, even though you didn't pass the {{ store.states[state].name }} Notary Practice Exam, you
+            <p>Don't worry, even though you didn't pass the {{ store.states[store.activeState].name }} Notary Practice Exam, you
                 <span v-if="freeExamsRemaining">still have {{ freeExamsRemaining }} free practice exams</span>
                 <span v-else>can <a href="#" @click="signup">create a free account</a> for unlimited practice exams</span>
             </p>
@@ -18,36 +18,7 @@
             </p>
         </div>
 
-        <v-table class="mt-16">
-            <thead>
-                <tr>
-                    <th class="text-left">
-                        Number
-                    </th>
-                    <th class="text-left">
-                        Started
-                    </th>s
-                    <th class="text-left">
-                        Finished
-                    </th>
-                    <th class="text-left">
-                        Time
-                    </th>
-                    <th class="text-left">
-                        Score
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(scantron, key, index) in scantrons" :key="key">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                    <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                    <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
-                    <td>{{ scantron.score.right }}/{{ totalExamQuestions }} ({{ scantron.score.percent }}%)</td>
-                </tr>
-            </tbody>
-        </v-table>
+        <exam-history @scantrons="scantrons"></exam-history>
 
         <v-btn @click="emit('retest')" class="mt-8">Test Again</v-btn>
     </v-container>
@@ -56,31 +27,18 @@
 import { useAppStore } from '@/store/app'
 import { computed, inject, onBeforeUnmount } from 'vue'
 
+import ExamHistory from './ExamHistory.vue'
+
 const emit = defineEmits(['retest'])
 
 const signup = inject("signup")
-const scantrons = computed(() => store.states[props.state].examsTaken)
-const right = computed(() => store.states[props.state].scantron.score.right)
-const percent = computed(() => store.states[props.state].scantron.score.percent)
-const totalExamQuestions = computed(() => store.states[props.state].scantron.totalExamQuestions)
-const freeExamsRemaining = computed(() => store.states[props.state].freeExamsRemaining)
+const scantrons = computed(() => store.states[store.activeState].examsTaken)
+const right = computed(() => store.states[store.activeState].scantron.score.right)
+const percent = computed(() => store.states[store.activeState].scantron.score.percent)
+const totalExamQuestions = computed(() => store.states[store.activeState].scantron.totalExamQuestions)
+const freeExamsRemaining = computed(() => store.states[store.activeState].freeExamsRemaining)
 const store = useAppStore()
-const props = defineProps({
-    state: {
-        type: String,
-        default: 'ca'
-    }
-})
-const scantron = computed(() => store.states[props.state].scantron)
+const scantron = computed(() => store.states[store.activeState].scantron)
 
-function formatTime(timeInSeconds) {
-    console.log(timeInSeconds)
-    const seconds = Math.floor(timeInSeconds % 60)
-    const minutes = Math.floor((timeInSeconds % 3600) / 60)
-    const formattedSeconds = String(seconds).padStart(2, '0')
-    const formattedMinutes = String(minutes).padStart(2, '0')
-
-    return `${formattedMinutes}m:${formattedSeconds}s`
-}
 onBeforeUnmount(() => emit('retest'))
 </script>
