@@ -1,34 +1,48 @@
 <template>
-    <v-container class="h-100 d-flex justify-center align-center">
-        <v-sheet v-if="Object.values(scantrons).length" class="mt-16">
-            <div class="text-overline ml-n16 d-flex align-center text-no-wrap">exam history<v-divider class="ml-2"></v-divider></div>
+    <v-container class="h-100 d-flex justify-center align-center pa-0">
+        <v-sheet v-if="Object.values(scantrons).length" class="mt-16" width="100%">
+            <div class="text-overline d-flex align-center text-no-wrap">exam history<v-divider class="ml-2"></v-divider></div>
             <v-table>
                 <thead>
                     <tr>
-                        <th class="text-left">
-                            Exam
+                        <th class="text-left" :class="{ 'pa-0': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">#</span>
+                            <span v-else>Exam</span>
                         </th>
-                        <th class="text-left">
-                            Started
+                        <th class="text-left" :class="{ 'pa-0': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">Start</span>
+                            <span v-else>Started</span>
                         </th>
-                        <th class="text-left">
-                            Finished
+                        <th class="text-left" :class="{ 'pa-0': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">Finish</span>
+                            <span v-else>Finished</span>
                         </th>
-                        <th class="text-left">
-                            Time
+                        <th class="text-left" :class="{ 'pa-0': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">Time</span>
+                            <span v-else>Time</span>
                         </th>
-                        <th class="text-left">
-                            Score
+                        <th class="text-left" :class="{ 'pa-0': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">Score</span>
+                            <span v-else>Score</span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(scantron, key, index) in scantrons" :key="key">
-                        <td>{{ index + 1 }}</td>
-                        <td>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                        <td>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</td>
-                        <td>{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
-                        <td>{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
+                        <td :class="{ 'pa-2': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">{{ index + 1 }}</span>
+                            <span v-else>{{ index + 1 }}</span>
+                        </td>
+                        <td :class="{ 'pa-2': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">{{ new Date(scantron.timeStarted).toLocaleString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false }) }}</span>
+                            <span v-else>{{ new Date(scantron.timeStarted).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</span>
+                        </td>
+                        <td :class="{ 'pa-2': smAndDown }">
+                            <span v-if="smAndDown" class="text-body-2">{{ new Date(scantron.timeFinished).toLocaleString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false }) }}</span>
+                            <span v-else>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</span>
+                        </td>
+                        <td :class="{ 'pa-2 text-body-2': smAndDown }">{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
+                        <td :class="{ 'pa-2 text-body-2': smAndDown }">{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
                     </tr>
                 </tbody>
             </v-table>
@@ -41,7 +55,9 @@
 <script setup>
 import { computed } from 'vue'
 import { useAppStore } from '@/store/app'
+import { useDisplay } from "vuetify"
 
+const { smAndDown } = useDisplay()
 const store = useAppStore()
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
 const totalExamQuestions = computed(() => store.states[store.activeState].scantron.totalExamQuestions)
