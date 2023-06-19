@@ -28,7 +28,7 @@
                         <v-icon color="primary-lighten-3" :icon="store.showAnswers ? 'visibility_off' : 'visibility'"></v-icon>
                     </template>
                 </v-list-item>
-                <v-list-item v-if="isAuthenticated" @mouseover="settingsCloseOnContentClick = false">
+                <v-list-item @mouseover="settingsCloseOnContentClick = false">
                     <div class="d-flex align-center">
                         <v-list-item-title class="text-capitalize mr-4">exam length</v-list-item-title>
                         <v-list-item-action end>
