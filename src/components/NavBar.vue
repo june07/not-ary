@@ -21,7 +21,7 @@
                 </v-btn>
             </template>
             <v-list nav>
-                <v-list-subheader>settings</v-list-subheader>
+                <v-list-subheader class="text-overline">settings</v-list-subheader>
                 <v-list-item @click="store.showAnswers = !store.showAnswers">
                     <v-list-item-title class="text-capitalize">{{ store.showAnswers ? 'hide answers' : 'show answers' }}</v-list-item-title>
                     <template v-slot:prepend>
@@ -39,6 +39,22 @@
                         <v-icon color="primary-lighten-3" icon="straighten"></v-icon>
                     </template>
                 </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item v-if="!showDeveloperSettings" @click="store.showDeveloperSettings = !store.showDeveloperSettings">
+                        <v-list-item-title class="">Show Developer Settings</v-list-item-title>
+                        <template v-slot:prepend>
+                            <v-icon color="primary-lighten-3" icon="developer_mode"></v-icon>
+                        </template>
+                    </v-list-item>
+                <div v-else>
+                    <v-list-subheader class="d-flex text-overline">developer<a style="text-decoration: none" href="#" class="ml-2 text-caption" @click="store.showDeveloperSettings = !store.showDeveloperSettings">(hide developer settings)</a></v-list-subheader>
+                    <v-list-item @click="store.showAnswers = !store.showAnswers">
+                        <v-list-item-title class="">Clear localStorage</v-list-item-title>
+                        <template v-slot:prepend>
+                            <v-icon color="red" icon="delete_forever"></v-icon>
+                        </template>
+                    </v-list-item>
+                </div>
             </v-list>
         </v-menu>
         <!-- auth menu start -->
@@ -122,6 +138,7 @@ export default {
         const examLength = computed(() => store.examLength)
         const editExamLength = ref(false)
         const settingsCloseOnContentClick = ref(true)
+        const showDeveloperSettings = computed(() => store.showDeveloperSettings)
 
         return {
             store,
@@ -133,7 +150,8 @@ export default {
             logout,
             examLength,
             editExamLength,
-            settingsCloseOnContentClick
+            settingsCloseOnContentClick,
+            showDeveloperSettings
         }
     },
     components: {
