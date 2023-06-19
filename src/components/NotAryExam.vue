@@ -48,18 +48,13 @@
             </div>
         </div>
 
-        <v-overlay v-model="overlays.image" class="d-flex justify-center align-center">
-            <v-container v-click-outside="onclickOutside" style="width: 90vh; height: 90vh">
-                <v-img :src="overlays.image"></v-img>
-            </v-container>
-        </v-overlay>
         <v-overlay v-model="overlays.hint" class="d-flex justify-center align-center">
             <v-sheet rounded="lg" class="pa-2 mx-auto" v-click-outside="onclickOutside" :width="smAndDown ? '98%' : 800">
                 <div class="ma-4 d-flex">
                     <v-icon icon="quiz" class="mr-4"></v-icon>
                     <div id="overlay-question">{{ questions[currentIndex].question }}</div>
                 </div>
-                <v-img max-height="800" :src="questions[currentIndex].image" @dblclick="fullSize" v-touch:tap.stop="fullSize"></v-img>
+                <v-img max-height="800" :src="questions[currentIndex].image"></v-img>
                 <div class="d-flex align-center text-no-wrap">
                     <v-btn variant="text" size="x-small" @click="listen('question')" :disabled="synth.speaking" prepend-icon="hearing">question</v-btn>
                     <v-btn variant="text" size="x-small" @click="listen" :disabled="synth.speaking || !questions[currentIndex].callout" prepend-icon="hearing">answer</v-btn>
@@ -112,7 +107,6 @@ const interval = ref()
 const overlays = ref({
     hint: false,
     reset: false,
-    image: false
 })
 const synth = window.speechSynthesis
 const showAnswers = computed(() => store.showAnswers)
@@ -236,10 +230,6 @@ function listen(text) {
     }
 
     synth.speak(utterance)
-}
-function fullSize() {
-    if (!questions.value[currentIndex.value]?.image) return
-    overlays.value.image = questions.value[currentIndex.value].image;
 }
 onMounted(() => {
     update()
