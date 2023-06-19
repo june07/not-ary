@@ -99,10 +99,10 @@ const emit = defineEmits(['finished', 'started', 'reset'])
 const props = defineProps({
     reset: Boolean
 })
-const choices = computed(() => shuffleArray([
+const choices = computed(() => shuffleArray(store.states[store.activeState].scantron.questions ? [
     { right: store.states[store.activeState].scantron.questions[currentIndex.value].options.right },
     ...store.states[store.activeState].scantron.questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
-]))
+] : []))
 const interval = ref()
 const overlays = ref({
     hint: false,
@@ -139,7 +139,7 @@ function startTimer() {
     interval.value = setInterval(() => store.states[store.activeState].scantron.timeTotal += 1, 1000)
 }
 function start() {
-    store.states[store.activeState].scantron.questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, store.examLength)
+    store.states[store.activeState].scantron.questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, isAuthenticated ? store.examLength : Math.min(45, store.examLength))
     store.states[store.activeState].scantron.timeStarted = Date.now()
     store.states[store.activeState].scantron.totalExamQuestions = store.states[store.activeState].scantron.questions.length
     startTimer()
