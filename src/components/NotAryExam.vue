@@ -100,8 +100,8 @@ const props = defineProps({
     reset: Boolean
 })
 const choices = computed(() => shuffleArray([
-    { right: store.states[store.activeState].questions[currentIndex.value].options.right },
-    ...store.states[store.activeState].questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
+    { right: store.states[store.activeState].scantron.questions[currentIndex.value].options.right },
+    ...store.states[store.activeState].scantron.questions[currentIndex.value].options.wrong.map(wrong => ({ wrong }))
 ]))
 const interval = ref()
 const overlays = ref({
@@ -122,7 +122,7 @@ const scantron = computed(() => store.states[store.activeState].scantron)
 const progress = computed(() => Object.keys(store.states[store.activeState]?.scantron.answers).length)
 const data = computed(() => store.states[store.activeState]?.data)
 const lastUpdate = computed(() => store.states[store.activeState]?.lastUpdate)
-const questions = computed(() => store.states[store.activeState]?.questions)
+const questions = computed(() => store.states[store.activeState]?.scantron.questions)
 async function update() {
     if (import.meta.env.mode !== 'production' || !data.value || (lastUpdate.value + 86_400_000) < Date.now()) {
         store.states[store.activeState].lastUpdate = Date.now()
@@ -139,9 +139,9 @@ function startTimer() {
     interval.value = setInterval(() => store.states[store.activeState].scantron.timeTotal += 1, 1000)
 }
 function start() {
-    store.states[store.activeState].questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, MODE === 'production' ? 45 : 3)
+    store.states[store.activeState].scantron.questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, store.examLength)
     store.states[store.activeState].scantron.timeStarted = Date.now()
-    store.states[store.activeState].scantron.totalExamQuestions = store.states[store.activeState].questions.length
+    store.states[store.activeState].scantron.totalExamQuestions = store.states[store.activeState].scantron.questions.length
     startTimer()
     emit('started')
 }
@@ -196,7 +196,7 @@ function parse(data) {
         question: $('.kg-toggle-heading-text').text(),
         options: {
             wrong: $('.kg-toggle-content > ul > li').filter((index, el) => !$(el).find('strong').length).get().map(el => $(el).text()),
-            right: $('.kg-toggle-content > ul > li > strong > em').text()
+            right: $('.kg-toggle-content > ul > li > strong > em').text() || $('.kg-toggle-content > ul > li > em > strong').text()
         },
         image: $('img').attr('src'),
         callout: $('.kg-callout-text').text()

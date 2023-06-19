@@ -7,6 +7,7 @@ export const useAppStore = defineStore("app", {
         activeState: 'ca',
         freeExamsRemaining: 3,
         showAnswers: false,
+        examLength: 45,
         states: {
             ca: {
                 name: 'California',

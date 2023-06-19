@@ -34,7 +34,7 @@ class GhostPlugin {
 
         try {
             let filter = `tag:${stateSlug}`
-            let posts = await this.api.posts.browse({ filter })
+            let posts = await this.api.posts.browse({ filter, limit: 'all' })
             
             return posts.map(post => ({
                 id: post.id,

@@ -14,7 +14,7 @@
         <v-btn variant="plain" icon size="x-small" id="theme" @click="$emit('theme')">
             <v-icon color="primary-lighten-3" :icon="store.theme === 'light' ? 'light_mode' : 'dark_mode'"></v-icon>
         </v-btn>
-        <v-menu>
+        <v-menu :close-on-content-click="settingsCloseOnContentClick" @update:modelValue="settingsCloseOnContentClick = true">
             <template v-slot:activator="{ props }">
                 <v-btn v-bind="props" variant="plain" icon size="x-small">
                     <v-icon color="primary-lighten-3" icon="settings"></v-icon>
@@ -23,9 +23,20 @@
             <v-list nav>
                 <v-list-subheader>settings</v-list-subheader>
                 <v-list-item @click="store.showAnswers = !store.showAnswers">
-                    <v-list-item-title>{{ store.showAnswers ? 'hide answers' : 'show answers' }}</v-list-item-title>
+                    <v-list-item-title class="text-capitalize">{{ store.showAnswers ? 'hide answers' : 'show answers' }}</v-list-item-title>
                     <template v-slot:prepend>
                         <v-icon color="primary-lighten-3" :icon="store.showAnswers ? 'visibility_off' : 'visibility'"></v-icon>
+                    </template>
+                </v-list-item>
+                <v-list-item v-if="isAuthenticated" @mouseover="settingsCloseOnContentClick = false">
+                    <div class="d-flex align-center">
+                        <v-list-item-title class="text-capitalize mr-4">exam length</v-list-item-title>
+                        <v-list-item-action end>
+                            <v-text-field v-model="store.examLength" density="compact" hide-details variant="outlined"></v-text-field>
+                        </v-list-item-action>
+                    </div>
+                    <template v-slot:prepend>
+                        <v-icon color="primary-lighten-3" icon="straighten"></v-icon>
                     </template>
                 </v-list-item>
             </v-list>
@@ -92,7 +103,7 @@
 }
 </style>
 <script>
-import { inject, ref } from "vue"
+import { ref, inject, computed } from "vue"
 import { useDisplay } from "vuetify"
 import { useAuth0 } from "@auth0/auth0-vue"
 import { useAppStore } from '@/store/app'
@@ -109,6 +120,9 @@ export default {
         const login = inject("login")
         const logout = inject("logout")
         const store = useAppStore()
+        const examLength = computed(() => store.examLength)
+        const editExamLength = ref(false)
+        const settingsCloseOnContentClick = ref(true)
 
         return {
             store,
@@ -118,6 +132,9 @@ export default {
             signup,
             login,
             logout,
+            examLength,
+            editExamLength,
+            settingsCloseOnContentClick
         }
     },
     components: {
