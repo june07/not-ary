@@ -1,15 +1,15 @@
 <template>
     <v-container class="h-100 d-flex flex-column align-center" fluid>
-        <div class="text-h5 mb-8">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
+        <div :class="smAndDown ? 'text-body-1' : 'text-h5'" class="mb-8">{{ year }} {{ store.states[store.activeState].name }} Notary Practice Exam</div>
         <div v-if="!scantron.timeStarted && !store.states[store.activeState].scantron.timeFinished" class="d-flex flex-column justify-center align-center">
             <p class="mb-8">
                 Not-Ary.com has the best FREE, <a href="https://github.com/june07/not-ary" rel="noopener" target="_blank">open source</a>, and most up-to-date Notary Exam available!
             </p>
             <p class="text-caption">
-            <ul>
+            <ul :class="{ 'mx-2': smAndDown }">
                 <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
                 <li>Easy to reference, highlighted, text-to-speech snippets from the handbook for each question</li>
-                <li>Take the exam 3 times for zero cost without registering, and unlimited times with FREE registration</li>
+                <li>Take the exam 3 times FREE without registering, and unlimited times with FREE registration</li>
                 <li>Timed exam just like the real thing so you can measure your progress</li>
                 <li>See correct answers as you go or wait until the end</li>
                 <li>Much more...</li>
@@ -54,7 +54,7 @@
                     <v-icon icon="quiz" class="mr-4"></v-icon>
                     <div id="overlay-question">{{ questions[currentIndex].question }}</div>
                 </div>
-                <v-img :src="questions[currentIndex].image"></v-img>
+                <v-img max-height="800" :src="questions[currentIndex].image"></v-img>
                 <div class="d-flex align-center text-no-wrap">
                     <v-btn variant="text" size="x-small" @click="listen('question')" :disabled="synth.speaking" prepend-icon="hearing">question</v-btn>
                     <v-btn variant="text" size="x-small" @click="listen" :disabled="synth.speaking || !questions[currentIndex].callout" prepend-icon="hearing">answer</v-btn>
@@ -211,13 +211,13 @@ function formatTimer(timeInSeconds) {
     return `${formattedMinutes}:${formattedSeconds}`
 }
 const highlight = (text, from, to) => {
-  let replacement = highlightBackground(text.slice(from, to))
-  return text.substring(0, from) + replacement + text.substring(to)
+    let replacement = highlightBackground(text.slice(from, to))
+    return text.substring(0, from) + replacement + text.substring(to)
 }
 const highlightBackground = sample => `<span style="font-weight: bold">${sample}</span>`
 function listen(text) {
     const { question, callout } = questions.value[currentIndex.value]
-    const utterance = new SpeechSynthesisUtterance(text === 'question' ? question : callout);
+    const utterance = new SpeechSynthesisUtterance(text === 'question' ? question : callout)
     const originalText = document.querySelector('#overlay-question').innerText
 
     if (text === 'question') {

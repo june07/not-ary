@@ -46,12 +46,12 @@
             <v-menu>
                 <template v-slot:activator="{ props }">
                     <v-btn :size="smAndDown ? 'small' : ''" v-bind="props" class="mx-2" :append-icon="isAuthenticated ? 'more_vert' : 'login'">
-                        <v-avatar size="small">
-                            <v-img contain v-if="!smAndDown" :src="user.picture" :alt="user.name" />
+                        <v-avatar :size="smAndDown ? 'x-small' : 'small'">
+                            <v-img contain :src="user.picture" :alt="user.name" />
                         </v-avatar>
                     </v-btn>
                 </template>
-                <v-list nav>
+                <v-list :density="smAndDown ? 'compact' : undefined" nav>
                     <v-list-subheader>Signed in as <span class="font-weight-bold">{{ user.name }}</span></v-list-subheader>
                     <v-list-item to="/account">
                         <v-list-item-title>Account</v-list-item-title>
@@ -93,7 +93,6 @@
                 </v-list>
             </v-menu>
         </div>
-        <v-spacer v-if="smAndDown"></v-spacer>
         <!-- no auth menu end -->
     </v-app-bar>
 </template>
