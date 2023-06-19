@@ -136,7 +136,8 @@ async function update() {
     }
 }
 function onclickOutside() {
-    overlays.value.hint = false
+    Object.values(overlays.value).map(overlay => overlay = false)
+    synth.cancel()
 }
 function startTimer() {
     if (interval.value) {
