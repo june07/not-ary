@@ -2,20 +2,12 @@
     <v-menu>
         <template v-slot:activator="{ props }">
             <v-btn v-bind="props" variant="text" :size="size" :icon="icon" :color="color">
-                <slot></slot>
+                <slot><v-icon size="small">share</v-icon></slot>
             </v-btn>
         </template>
         <v-list class="rounded-xl">
-            <v-list-item v-for="type in data.networks" :key="type.network" density="compact">
-                <v-btn :size="size" variant="text" @click="$emit('copy')" v-if="type.network === 'copy'">
-                    <v-icon class="mr-2" small>content_copy</v-icon>{{ type.name }}
-                </v-btn>
-                <v-btn :size="size" variant="text" :href="url" target="_blank" rel="noopener" v-else-if="type.network === 'tab'">
-                    <v-icon class="mr-2" small>tab</v-icon>{{ type.name }}
-                </v-btn>
-                <ShareNetwork v-else url="https://blog.not-ary.com" :network="type.network" :title="data.sharing.title"
-                    :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags"
-                    :twitterUser="data.sharing.twitterUser">
+            <v-list-item v-for="type in networks" :key="type.network" density="compact">
+                <ShareNetwork url="https://blog.not-ary.com" :network="type.network" :title="data.sharing.title" :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags" :twitterUser="data.sharing.twitterUser">
                     <v-icon class="mr-2" :color="type.color" v-if="!type.network.match(/twitter|whatsapp/)">
                         <span class="material-icons">{{ type.icon }}</span>
                     </v-icon>
@@ -35,39 +27,30 @@ a {
 }
 </style>
 <script setup>
-import { ShareNetwork } from 'vue-social-sharing';
+import { computed } from 'vue'
+import { ShareNetwork } from 'vue-social-sharing'
 
-import IconBase from './IconBase';
-import IconTwitter from './IconTwitter';
-import IconWhatsapp from './IconWhatsapp';
+import IconBase from './IconBase'
+import IconTwitter from './IconTwitter'
+import IconWhatsapp from './IconWhatsapp'
 
 defineProps({
     url: String,
-    copy: String,
     size: String,
     icon: Boolean,
     color: String,
-});
+})
 defineEmits(['copy'])
+const networks = computed(() => data.networks)
 const data = {
     sharing: {
-        title: 'shareTitle',
-        description: 'shareDescription',
-        quote: 'shareQuote',
-        hashtags: 'shareHashtags',
+        title: 'Not-Ary.com',
+        description: 'Level up your skills, stay updated with the latest laws, and master the art of notarization.',
+        quote: 'Share and help others ace the exam with confidence!',
+        hashtags: '#Notary,#NotaryPublic,#NotaryServices,#MobileNotary,#NotaryLife,#NotarySigningAgent,#NotaryStamp,#Notarization,#LegalServices,#DocumentSigning,#CertifiedNotary,#NotaryCommunity,#NotaryLove,#NotaryBusiness,#NotaryLifeBalance',
         twitterUser: "june07",
     },
     networks: [
-        {
-            network: "tab",
-            name: "Open Tab",
-            icon: "tab",
-        },
-        {
-            network: "copy",
-            name: "Copy Link",
-            icon: "content_copy",
-        },
         {
             network: "email",
             name: "Email",
@@ -99,5 +82,5 @@ const data = {
             color: "#25d366",
         },
     ],
-};
+}
 </script>

@@ -17,6 +17,7 @@
             </p>
         </div>
 
+        <div class="text-no-wrap mt-2">Share with your friends<share-menu :url="`https://${origin}`" icon size="small"></share-menu></div>
         <exam-history @scantrons="scantrons"></exam-history>
 
         <v-btn @click="emit('retest')" class="mt-8">Test Again</v-btn>
@@ -24,12 +25,14 @@
 </template>
 <script setup>
 import { useAppStore } from '@/store/app'
-import { computed, inject, onBeforeUnmount } from 'vue'
+import { ref, computed, inject, onBeforeUnmount, onMounted } from 'vue'
 
 import ExamHistory from './ExamHistory.vue'
+import ShareMenu from './ShareMenu.vue'
 
 const emit = defineEmits(['retest'])
 
+const origin = ref()
 const signup = inject("signup")
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
 const right = computed(() => store.states[store.activeState].scantron.score?.right)
@@ -39,5 +42,6 @@ const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const store = useAppStore()
 const scantron = computed(() => store.states[store.activeState].scantron)
 
+onMounted(() => origin.value = document.location.origin)
 onBeforeUnmount(() => emit('retest'))
 </script>
