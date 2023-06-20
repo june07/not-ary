@@ -87,7 +87,7 @@
         <!-- auth menu end -->
         <!-- no auth menu start -->
         <div v-else>
-            <v-menu open-on-hover>
+            <v-menu>
                 <template v-slot:activator="{ props }">
                     <v-btn variant="text" :size="smAndDown ? 'x-small' : ''" v-bind="props" :class="!smAndDown ? 'mr-4' : 'px-0'">
                         <v-icon color="primary-lighten-3" icon="person"></v-icon>
