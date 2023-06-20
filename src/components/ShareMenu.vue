@@ -7,7 +7,7 @@
         </template>
         <v-list class="rounded-xl">
             <v-list-item v-for="type in networks" :key="type.network" density="compact">
-                <ShareNetwork url="https://blog.not-ary.com" :network="type.network" :title="data.sharing.title" :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags" :twitterUser="data.sharing.twitterUser">
+                <ShareNetwork :url="url" :network="type.network" :title="data.sharing.title" :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags" :twitterUser="data.sharing.twitterUser">
                     <v-icon class="mr-2" :color="type.color" v-if="!type.network.match(/twitter|whatsapp/)">
                         <span class="material-icons">{{ type.icon }}</span>
                     </v-icon>
