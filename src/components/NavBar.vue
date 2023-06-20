@@ -40,7 +40,7 @@
                     </template>
                 </v-list-item>
                 <v-divider></v-divider>
-                <v-list-item v-if="!showDeveloperSettings" @click="store.showDeveloperSettings = !store.showDeveloperSettings">
+                <v-list-item @mouseover="settingsCloseOnContentClick = false" v-if="!showDeveloperSettings" @click="store.showDeveloperSettings = !store.showDeveloperSettings">
                         <v-list-item-title class="">Show Developer Settings</v-list-item-title>
                         <template v-slot:prepend>
                             <v-icon color="primary-lighten-3" icon="developer_mode"></v-icon>
