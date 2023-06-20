@@ -41,17 +41,20 @@
                 </v-list-item>
                 <v-divider></v-divider>
                 <v-list-item @mouseover="settingsCloseOnContentClick = false" v-if="!showDeveloperSettings" @click="store.showDeveloperSettings = !store.showDeveloperSettings">
-                        <v-list-item-title class="">Show Developer Settings</v-list-item-title>
-                        <template v-slot:prepend>
-                            <v-icon color="primary-lighten-3" icon="developer_mode"></v-icon>
-                        </template>
-                    </v-list-item>
+                    <v-list-item-title class="">Show Developer Settings</v-list-item-title>
+                    <template v-slot:prepend>
+                        <v-icon color="primary-lighten-3" icon="developer_mode"></v-icon>
+                    </template>
+                </v-list-item>
                 <div v-else>
                     <v-list-subheader class="d-flex text-overline">developer<a style="text-decoration: none" href="#" class="ml-2 text-caption" @click="store.showDeveloperSettings = !store.showDeveloperSettings">(hide developer settings)</a></v-list-subheader>
-                    <v-list-item @click="store.showAnswers = !store.showAnswers">
+                    <v-list-item @click="clearLocalStorage">
                         <v-list-item-title class="">Clear localStorage</v-list-item-title>
                         <template v-slot:prepend>
                             <v-icon color="red" icon="delete_forever"></v-icon>
+                        </template>
+                        <template v-slot:append>
+                            <v-progress-circular indeterminate v-if="progress" size="small" width="1"></v-progress-circular>
                         </template>
                     </v-list-item>
                 </div>
@@ -121,7 +124,7 @@
 import { ref, inject, computed } from "vue"
 import { useDisplay } from "vuetify"
 import { useAuth0 } from "@auth0/auth0-vue"
-import { useAppStore } from '@/store/app'
+import { useAppStore, resetStore } from '@/store/app'
 
 import IconBase from './IconBase.vue'
 import IconNotAry from "./IconNotAry.vue"
@@ -129,6 +132,7 @@ import IconNotAry from "./IconNotAry.vue"
 export default {
     name: "NavBar",
     setup() {
+        const progress = ref(false)
         const { smAndDown } = useDisplay()
         const { user, isAuthenticated } = useAuth0()
         const signup = inject("signup")
@@ -151,7 +155,8 @@ export default {
             examLength,
             editExamLength,
             settingsCloseOnContentClick,
-            showDeveloperSettings
+            showDeveloperSettings,
+            progress
         }
     },
     components: {
@@ -176,8 +181,10 @@ export default {
                 "stable"
             this.$router.go()
         },
-        dialogSaveHandler() {
-
+        clearLocalStorage() {
+            this.progress = true
+            resetStore()
+            setTimeout(() => this.progress = false, 500)
         }
     }
 }

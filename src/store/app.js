@@ -46,5 +46,10 @@ export const useAppStore = defineStore("app", {
             this.freeExamsRemaining = Math.max(3 - Object.keys(this.states[this.activeState].examsTaken).length, 0)
         }
     },
-    persist: true,
+    persist: {
+        key: 'not-ary'
+    },
 })
+export const resetStore = () => {
+    localStorage.removeItem('not-ary')
+}
