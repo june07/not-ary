@@ -28,14 +28,14 @@
             <v-progress-linear :max="totalExamQuestions" v-model="progress" color="green"></v-progress-linear>
 
             <div v-if="MODE !== 'production'">{{ questions[currentIndex].title }}</div>
-            <div class="question mt-8" :class="{'ml-16': !smAndDown}">{{ questions[currentIndex].question }}</div>
+            <div class="question mt-8" :class="{ 'ml-16': !smAndDown }">{{ questions[currentIndex].question }}</div>
             <div class="mb-8 mr-16 text-end"><v-btn class="hint" size="x-small" variant="plain" prepend-icon="menu_book" @click="overlays.hint = !overlays.hint">show hint</v-btn></div>
 
             <div class="choices">
                 <v-radio-group :model-value="answers[questions[currentIndex].id]">
                     <div class="d-flex align-center" v-for="choice in choices" :key="Object.values(choice)[0]">
                         <v-icon v-if="showAnswers && answers[questions[currentIndex].id]" :color="choice.right ? 'green' : 'red'" :icon="choice.right ? 'check_box' : 'disabled_by_default'"></v-icon>
-                        <v-radio :label="Object.values(choice)[0]" :value="choice" @change="markAnswer(choice)"></v-radio>
+                        <v-radio :class="{ 'mobile-radio': smAndDown }" :label="Object.values(choice)[0]" :value="choice" @change="markAnswer(choice)"></v-radio>
                     </div>
                 </v-radio-group>
             </div>
@@ -79,6 +79,14 @@
 <style>
 .speaking-progress {
     max-width: 50%;
+}
+
+.mobile-radio {
+    border: dotted;
+    border-color: #000E14;
+    border-width: 1px;
+    border-radius: 8px;
+    margin: 1px;
 }
 </style>
 <script setup>
