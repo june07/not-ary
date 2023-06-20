@@ -4,14 +4,14 @@ import { useAppStore } from '@/store/app'
 const { VITE_API_SERVER: API_SERVER, MODE } = import.meta.env
 
 const axiosInstance = axios.create({
+    withCredentials: true,
     headers: {
         "x-application": "not-ary"
-    },
-    withCredentials: true
+    }
 })
 
 const apiService = (app) => {
-    const { } = app.config.globalProperties
+    const { $auth0 } = app.config.globalProperties
     const store = useAppStore()
 
     const request = async (passedOptions) => {
@@ -49,17 +49,29 @@ const apiService = (app) => {
     }
 
     return {
-        sync: async (state) => {
-            const response = await request({
-                url: `${API_SERVER}/v1/user/sync/`,
-                method: "PUT",
-                data: state
-            })
+        sync: async (syncStateObj = {}) => {
+            const token = await $auth0.getAccessTokenSilently();
 
-            if (/200/.test(response.status)) {
-                return response
-            }
-            return response.status
+            Object.values(syncStateObj).map(async state => {
+                const response = await request({
+                    url: `${API_SERVER}/v1/user/sync/`,
+                    method: "PUT",
+                    data: {
+                        state
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                if (/200/.test(response.status)) {
+                    if (MODE === 'production') {
+                        store.syncStateObj = syncStateObj
+                    }
+                    return response
+                }
+                return response.status
+            })
         },
         request,
         buildInfo: async () => {

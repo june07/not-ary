@@ -1,6 +1,6 @@
 import { authGuard, createAuth0 } from "@auth0/auth0-vue"
 
-const { VITE_AUTH0_DOMAIN, VITE_AUTH0_CLIENTID } =
+const { VITE_AUTH0_DOMAIN, VITE_AUTH0_CLIENTID, VITE_AUTH0_AUDIENCE } =
     import.meta.env
 
 const $auth = createAuth0({
@@ -8,6 +8,7 @@ const $auth = createAuth0({
     clientId: VITE_AUTH0_CLIENTID,
     authorizationParams: {
         redirect_uri: window.location.origin,
+        audience: VITE_AUTH0_AUDIENCE
     },
 })
 

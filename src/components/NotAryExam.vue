@@ -101,7 +101,7 @@ const { user, isAuthenticated } = useAuth0()
 const signup = inject("signup")
 const { smAndDown } = useDisplay()
 const { MODE } = import.meta.env
-const { $ghost, $api } = getCurrentInstance().appContext.config.globalProperties
+const { $ghost } = getCurrentInstance().appContext.config.globalProperties
 const store = useAppStore()
 const emit = defineEmits(['finished', 'started', 'reset'])
 const props = defineProps({
@@ -181,15 +181,8 @@ function submit() {
         store.states[store.activeState].scantron.score.pass = true
     }
     store.saveScantron()
-    syncState()
     submitted.value = true
     emit('finished')
-}
-function syncState() {
-    const syncState = {
-        scantronsByState: Object.entries(store.states).reduce((scantronsByState, kv) => ({ ...scantronsByState, [kv[0]]: kv[1] }), {})
-    }
-    $api.sync(syncState)
 }
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -256,7 +249,6 @@ onMounted(() => {
     if (props.reset) {
         reset()
     }
-    globalThis.syncState = syncState
 })
 onBeforeUnmount(() => {
     clearInterval(interval.value)

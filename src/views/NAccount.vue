@@ -6,8 +6,14 @@
 </template>
 <script setup>
 import { useDisplay } from "vuetify"
+import { onMounted, getCurrentInstance } from 'vue'
 
 import ExamHistory from '../components/ExamHistory.vue'
 
 const { smAndDown } = useDisplay()
+const { $api } = getCurrentInstance().appContext.config.globalProperties
+
+onMounted(() => {
+    $api.sync();
+})
 </script>

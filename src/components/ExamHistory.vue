@@ -53,12 +53,13 @@
     </v-container>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, getCurrentInstance, onMounted } from 'vue'
 import { useAppStore } from '@/store/app'
 import { useDisplay } from "vuetify"
 
 import ShareMenu from './ShareMenu.vue'
 
+const { $api } = getCurrentInstance().appContext.config.globalProperties
 const { smAndDown } = useDisplay()
 const store = useAppStore()
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
@@ -73,8 +74,25 @@ function formatTime(timeInSeconds) {
     return `${formattedMinutes}m:${formattedSeconds}s`
 }
 function title(scantron) {
-    const { pass, percent } = scantron.score;
+    const { pass, percent } = scantron.score
 
     return percent >= 90 ? `I just scored ${percent}% at Not-Ary.com!🔥` : `I just ${pass ? 'passed' : 'finished'} my practice Notary Exam on Not-Ary.com.📢`
 }
+function syncState() {
+    if (!Object.entries(store.states)?.length) return
+
+    const examState = {
+        scantronsByState: Object.entries(store.states)
+            .filter(kv => Object.values(kv[1].examsTaken).length)
+            .reduce((scantronsByState, kv) => ({ ...scantronsByState, [kv[0]]: kv[1].examsTaken }), {})
+    }
+    
+    if (JSON.stringify(examState.scantronsByState) === '{}') return
+    if (JSON.stringify(examState) === JSON.stringify(store.lastExamState)) return
+
+    $api.sync({ examState })
+}
+onMounted(() => {
+    syncState()
+})
 </script>

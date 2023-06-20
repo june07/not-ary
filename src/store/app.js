@@ -1,8 +1,6 @@
 // Utilities
 import { defineStore } from "pinia"
 
-import api from '../plugins/api'
-
 export const useAppStore = defineStore("app", {
     state: () => ({
         theme: 'light',
@@ -28,7 +26,8 @@ export const useAppStore = defineStore("app", {
                 },
                 examsTaken: {}
             }
-        }
+        },
+        lastExamState: {}
     }),
     actions: {
         resetScantron() {

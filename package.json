@@ -13,6 +13,7 @@
     "@tryghost/content-api": "^1.11.9",
     "@vue/test-utils": "^2.3.2",
     "async": "^3.2.4",
+    "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
     "pinia": "^2.0.23",
     "pinia-plugin-persistedstate": "^3.1.0",
