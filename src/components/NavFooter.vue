@@ -52,7 +52,7 @@ const props = defineProps({
     order: String
 })
 const stylize = (text) => {
-    return text.split('').map(l => /[notaryexam]/.test(l) ? l : smAndDown.value ? '' : `<span class="font-weight-light">${l}</span>`).join('\n')
+    return text.split('').map(l => /[notary]/i.test(l) ? l : smAndDown.value ? '' : `<span class="font-weight-light">${l}</span>`).join('\n')
 }
 // eslint-disable-next-line no-unused-vars
 const emit = defineEmits(['credits'])
