@@ -9,7 +9,7 @@
             <ul :class="{ 'mx-2': smAndDown }">
                 <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
                 <li>Easy to reference, highlighted, text-to-speech snippets from the handbook for each question</li>
-                <li>Take the exam 3 times FREE without registering, and unlimited times with FREE registration</li>
+                <li>Take the exam 3 times FREE without registering, and unlimited times with <a href="#" @click="signup">FREE registration</a></li>
                 <li>Timed exam just like the real thing so you can measure your progress</li>
                 <li>See correct answers as you go or wait until the end</li>
                 <li>Much more...</li>
@@ -92,7 +92,7 @@
 <script setup>
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
-import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject, watch } from 'vue'
+import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useAuth0 } from '@auth0/auth0-vue'
 
@@ -101,7 +101,7 @@ const { user, isAuthenticated } = useAuth0()
 const signup = inject("signup")
 const { smAndDown } = useDisplay()
 const { MODE } = import.meta.env
-const { $ghost } = getCurrentInstance().appContext.config.globalProperties
+const { $ghost, $api } = getCurrentInstance().appContext.config.globalProperties
 const store = useAppStore()
 const emit = defineEmits(['finished', 'started', 'reset'])
 const props = defineProps({
@@ -181,8 +181,15 @@ function submit() {
         store.states[store.activeState].scantron.score.pass = true
     }
     store.saveScantron()
+    syncState()
     submitted.value = true
     emit('finished')
+}
+function syncState() {
+    const syncState = {
+        scantronsByState: Object.entries(store.states).reduce((scantronsByState, kv) => ({ ...scantronsByState, [kv[0]]: kv[1] }), {})
+    }
+    $api.sync(syncState)
 }
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -249,6 +256,7 @@ onMounted(() => {
     if (props.reset) {
         reset()
     }
+    globalThis.syncState = syncState
 })
 onBeforeUnmount(() => {
     clearInterval(interval.value)

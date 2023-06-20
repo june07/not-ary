@@ -1,6 +1,8 @@
 // Utilities
 import { defineStore } from "pinia"
 
+import api from '../plugins/api'
+
 export const useAppStore = defineStore("app", {
     state: () => ({
         theme: 'light',
@@ -42,7 +44,7 @@ export const useAppStore = defineStore("app", {
             }
         },
         saveScantron() {
-            this.states.ca.examsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
+            this.states[this.activeState].examsTaken[this.states.ca.scantron.timeFinished] = this.states.ca.scantron
             this.freeExamsRemaining = Math.max(3 - Object.keys(this.states[this.activeState].examsTaken).length, 0)
         }
     },
