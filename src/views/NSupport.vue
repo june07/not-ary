@@ -45,10 +45,10 @@
 
         <div :class="smAndDown ? 'mx-4' : ''">
             <p class="my-8">
-                Your generous contribution will help us continue the development and maintenance of Not-ary.com. Here's how your
+                Your generous contribution will help us continue the development and maintenance of Not-Ary.com. Here's how your
                 donation will be used:
             <ol class="my-4" :class="smAndDown ? 'mx-8 text-caption' : ''">
-                <li><b>Enhancing the Website:</b> We are dedicated to continually improving notary-exam.com by adding new features, improving the user experience, and expanding the content to cover a wider range of topics related to the Notary Exams. Your support will enable us to invest in the necessary resources and tools to make the website even better.</li>
+                <li><b>Enhancing the Website:</b> We are dedicated to continually improving Not-Ary.com by adding new features, improving the user experience, and expanding the content to cover a wider range of topics related to the Notary Exams. Your support will enable us to invest in the necessary resources and tools to make the website even better.</li>
 
                 <li><b>Content Creation:</b> Developing high-quality practice exams requires time and effort. With your contribution, we can allocate resources to create in-depth study resources that will benefit notary exam candidates in their preparation journey.</li>
 
