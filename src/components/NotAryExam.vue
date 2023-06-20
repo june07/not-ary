@@ -28,7 +28,7 @@
             <v-progress-linear :max="totalExamQuestions" v-model="progress" color="green"></v-progress-linear>
 
             <div v-if="MODE !== 'production'">{{ questions[currentIndex].title }}</div>
-            <div class="question ml-16 mt-8">{{ questions[currentIndex].question }}</div>
+            <div class="question mt-8" :class="{'ml-16': !smAndDown}">{{ questions[currentIndex].question }}</div>
             <div class="mb-8 mr-16 text-end"><v-btn class="hint" size="x-small" variant="plain" prepend-icon="menu_book" @click="overlays.hint = !overlays.hint">show hint</v-btn></div>
 
             <div class="choices">
