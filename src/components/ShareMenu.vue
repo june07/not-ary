@@ -7,7 +7,7 @@
         </template>
         <v-list class="rounded-xl">
             <v-list-item v-for="type in networks" :key="type.network" density="compact">
-                <ShareNetwork :url="url" :network="type.network" :title="data.sharing.title" :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags" :twitterUser="data.sharing.twitterUser">
+                <ShareNetwork :url="url" :network="type.network" :title="title" :description="data.sharing.description" :quote="data.sharing.quote" :hashtags="data.sharing.hashtags" :twitterUser="data.sharing.twitterUser">
                     <v-icon class="mr-2" :color="type.color" v-if="!type.network.match(/twitter|whatsapp/)">
                         <span class="material-icons">{{ type.icon }}</span>
                     </v-icon>
@@ -34,17 +34,22 @@ import IconBase from './IconBase'
 import IconTwitter from './IconTwitter'
 import IconWhatsapp from './IconWhatsapp'
 
-defineProps({
-    url: String,
+const props = defineProps({
+    url: {
+        type: String,
+        default: document.location.origin
+    },
     size: String,
     icon: Boolean,
     color: String,
+    title: String
 })
 defineEmits(['copy'])
 const networks = computed(() => data.networks)
+const title = computed(() => props.title || 'Not-Ary.com')
+
 const data = {
     sharing: {
-        title: 'Not-Ary.com',
         description: 'Level up your skills, stay updated with the latest laws, and master the art of notarization.',
         quote: 'Share and help others ace the exam with confidence!',
         hashtags: '#Notary,#NotaryPublic,#NotaryServices,#MobileNotary,#NotaryLife,#NotarySigningAgent,#NotaryStamp,#Notarization,#LegalServices,#DocumentSigning,#CertifiedNotary,#NotaryCommunity,#NotaryLove,#NotaryBusiness,#NotaryLifeBalance',

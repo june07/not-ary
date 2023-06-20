@@ -31,7 +31,7 @@
                     <tr v-for="(scantron, key, index) in scantrons" :key="key">
                         <td :class="{ 'pa-2': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">{{ index + 1 }}</span>
-                            <span v-else>{{ index + 1 }}</span>
+                            <span v-else>{{ index + 1 }}</span><share-menu icon size="small" :title="title(scantron)"></share-menu>
                         </td>
                         <td :class="{ 'pa-2': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">{{ new Date(scantron.timeStarted).toLocaleString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false }) }}</span>
@@ -57,6 +57,8 @@ import { computed } from 'vue'
 import { useAppStore } from '@/store/app'
 import { useDisplay } from "vuetify"
 
+import ShareMenu from './ShareMenu.vue'
+
 const { smAndDown } = useDisplay()
 const store = useAppStore()
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
@@ -69,5 +71,10 @@ function formatTime(timeInSeconds) {
     const formattedMinutes = String(minutes).padStart(2, '0')
 
     return `${formattedMinutes}m:${formattedSeconds}s`
+}
+function title(scantron) {
+    const { pass, percent } = scantron.score;
+
+    return percent >= 90 ? `I just scored ${percent}% at Not-Ary.com!🔥` : `I just ${pass ? 'passed' : 'finished'} my practice Notary Exam on Not-Ary.com.📢`
 }
 </script>

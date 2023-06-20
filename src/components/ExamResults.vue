@@ -17,7 +17,8 @@
             </p>
         </div>
 
-        <div class="text-no-wrap mt-2">Please Share<share-menu :url="origin" icon size="small"></share-menu></div>
+        <div class="text-no-wrap mt-2">Please Share<share-menu icon size="small"></share-menu></div>
+        <router-link style="text-decoration: none" to="/support"><span class="text-overline text-red mr-2">Support Not-Ary.com</span><v-icon icon="toll" color="black" size="small"></v-icon></router-link>
         <exam-history @scantrons="scantrons"></exam-history>
 
         <v-btn @click="emit('retest')" class="mt-8">Test Again</v-btn>
@@ -32,7 +33,6 @@ import ShareMenu from './ShareMenu.vue'
 
 const emit = defineEmits(['retest'])
 
-const origin = ref()
 const signup = inject("signup")
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
 const right = computed(() => store.states[store.activeState].scantron.score?.right)
@@ -42,6 +42,5 @@ const freeExamsRemaining = computed(() => store.freeExamsRemaining)
 const store = useAppStore()
 const scantron = computed(() => store.states[store.activeState].scantron)
 
-onMounted(() => origin.value = document.location.origin)
 onBeforeUnmount(() => emit('retest'))
 </script>
