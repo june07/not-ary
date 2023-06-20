@@ -223,10 +223,10 @@ function listen(text) {
 
     if (text === 'question') {
         // callout is an image that has been pre-highlighted.
-        utterance.addEventListener('boundary', event => {
+        utterance.onboundary = event => {
             const { charIndex, charLength } = event
             document.querySelector('#overlay-question').innerHTML = highlight(originalText, charIndex, charIndex + charLength)
-        })
+        }
     }
 
     synth.speak(utterance)
