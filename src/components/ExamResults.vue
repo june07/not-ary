@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <div class="text-no-wrap mt-2">Share with your friends<share-menu :url="`https://${origin}`" icon size="small"></share-menu></div>
+        <div class="text-no-wrap mt-2">Please Share<share-menu :url="`https://${origin}`" icon size="small"></share-menu></div>
         <exam-history @scantrons="scantrons"></exam-history>
 
         <v-btn @click="emit('retest')" class="mt-8">Test Again</v-btn>
