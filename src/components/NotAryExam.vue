@@ -149,6 +149,7 @@ function startTimer() {
 }
 function start() {
     store.states[store.activeState].scantron.questions = shuffleArray(data.value.map((d) => parse(d))).slice(0, isAuthenticated ? store.examLength : Math.min(45, store.examLength))
+        .map((question, index) => ({ ...question, order: index + 1}))
     store.states[store.activeState].scantron.timeStarted = Date.now()
     store.states[store.activeState].scantron.totalExamQuestions = store.states[store.activeState].scantron.questions.length
     startTimer()

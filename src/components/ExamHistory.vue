@@ -33,8 +33,8 @@
                             <span v-if="smAndDown" class="text-body-2">{{ index + 1 }}</span>
                             <span v-else class="mr-4">{{ index + 1 }}</span>
                             <div class="ml-auto">
+                                <v-btn v-if="$route.name === 'account' && scantron.score.wrong > 0" size="small" variant="text" @click="emit('selected', scantron)" icon="loupe" density="compact"></v-btn>
                                 <share-menu icon density="compact" size="small" :title="title(scantron)"></share-menu>
-                                <v-btn size="small" variant="text" @click="emit('selected', scantron)" icon="loupe" density="compact"></v-btn>
                             </div>
                         </td>
                         <td :class="{ 'pa-2': smAndDown }">
