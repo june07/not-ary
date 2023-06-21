@@ -16,7 +16,7 @@
         <v-divider></v-divider>
 
         <div class="d-flex">
-            <v-btn v-for="secondaryLink in secondaryLinks" :key="secondaryLink" color="secondary" variant="plain" class="mx-2" rounded="xl" size="x-small"
+            <v-btn :class="smAndDown ? 'pb-6 pt-2' : ''" v-for="secondaryLink in secondaryLinks" :key="secondaryLink" color="secondary" variant="plain" class="mx-2" rounded="xl" size="x-small"
                 :href="secondaryLink.href" :to="secondaryLink.to" :target="secondaryLink.target || '_self'">
                 <span v-html="secondaryLink.name"></span>
             </v-btn>
