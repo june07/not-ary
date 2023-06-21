@@ -20,6 +20,15 @@
         </v-sheet>
     </v-container>
 </template>
+<style>
+.mobile-radio {
+    border: dotted;
+    border-color: #000E14;
+    border-width: 1px;
+    border-radius: 8px;
+    margin: 1px;
+}
+</style>
 <script setup>
 import { ref, computed } from 'vue'
 import { useDisplay } from "vuetify"

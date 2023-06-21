@@ -80,7 +80,6 @@
 .speaking-progress {
     max-width: 50%;
 }
-
 .mobile-radio {
     border: dotted;
     border-color: #000E14;
