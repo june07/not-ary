@@ -7,7 +7,7 @@
                     <tr>
                         <th class="text-left" :class="{ 'pa-0': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">#</span>
-                            <span v-else>Exam</span>
+                            <span v-else>Id</span>
                         </th>
                         <th class="text-left" :class="{ 'pa-0': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">Start</span>
@@ -33,7 +33,13 @@
                             <span v-if="smAndDown" class="text-body-2">{{ index + 1 }}</span>
                             <span v-else class="mr-4">{{ index + 1 }}</span>
                             <div class="ml-auto">
-                                <v-btn v-if="$route.name === 'account' && scantron.score.wrong > 0" size="small" variant="text" @click="emit('selected', scantron)" icon="loupe" density="compact"></v-btn>
+                                <v-tooltip v-if="$route.name === 'account' && scantron.score.wrong > 0" location="left">
+                                    <template v-slot:activator="{ props }">
+                                        <span v-bind="props" class="mr-4"><v-btn size="small" variant="text" @click="emit('selected', scantron)" icon="loupe" density="compact"></v-btn></span>
+                                    </template>
+                                    <span class="text-overline">exam {{ hashids.encode(scantron.timeStarted) }}</span>
+                                </v-tooltip>
+                                
                                 <share-menu icon density="compact" size="small" :title="title(scantron)"></share-menu>
                             </div>
                         </td>
@@ -60,9 +66,11 @@
 import { computed, getCurrentInstance, onMounted } from 'vue'
 import { useAppStore } from '@/store/app'
 import { useDisplay } from "vuetify"
+import Hashids from 'hashids'
 
 import ShareMenu from './ShareMenu.vue'
 
+const hashids = new Hashids('not-ary.com')
 const emit = defineEmits(['selected'])
 const { $api } = getCurrentInstance().appContext.config.globalProperties
 const { smAndDown } = useDisplay()
@@ -91,7 +99,7 @@ function syncState() {
             .filter(kv => Object.values(kv[1].examsTaken).length)
             .reduce((scantronsByState, kv) => ({ ...scantronsByState, [kv[0]]: kv[1].examsTaken }), {})
     }
-    
+
     if (JSON.stringify(examState.scantronsByState) === '{}') return
     if (JSON.stringify(examState) === JSON.stringify(store.lastExamState)) return
 
