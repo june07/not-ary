@@ -1,7 +1,7 @@
 <template>
     <v-menu>
         <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" variant="text" :size="size" :icon="icon" :color="color">
+            <v-btn v-bind="props" :density="density" variant="text" :size="size" :icon="icon" :color="color">
                 <slot><v-icon size="small">share</v-icon></slot>
             </v-btn>
         </template>
@@ -42,7 +42,8 @@ const props = defineProps({
     size: String,
     icon: Boolean,
     color: String,
-    title: String
+    title: String,
+    density: String
 })
 defineEmits(['copy'])
 const networks = computed(() => data.networks)

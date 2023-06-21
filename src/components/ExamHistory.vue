@@ -1,6 +1,6 @@
 <template>
-    <v-container class="h-100 d-flex justify-center align-center pa-0">
-        <v-sheet v-if="Object.values(scantrons).length" class="mt-16" width="100%">
+    <v-container class="h-100 d-flex justify-center" :class="{ 'my-0 py-0': smAndDown }">
+        <v-sheet v-if="Object.values(scantrons).length" width="100%">
             <div class="text-overline d-flex align-center text-no-wrap">exam history<v-divider class="ml-2"></v-divider></div>
             <v-table>
                 <thead>
@@ -29,9 +29,13 @@
                 </thead>
                 <tbody>
                     <tr v-for="(scantron, key, index) in scantrons" :key="key">
-                        <td :class="{ 'pa-2': smAndDown }">
+                        <td class="d-flex align-center" :class="{ 'pa-2': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">{{ index + 1 }}</span>
-                            <span v-else>{{ index + 1 }}</span><share-menu icon size="small" :title="title(scantron)"></share-menu>
+                            <span v-else class="mr-4">{{ index + 1 }}</span>
+                            <div class="ml-auto">
+                                <share-menu icon density="compact" size="small" :title="title(scantron)"></share-menu>
+                                <v-btn size="small" variant="text" @click="emit('selected', scantron)" icon="loupe" density="compact"></v-btn>
+                            </div>
                         </td>
                         <td :class="{ 'pa-2': smAndDown }">
                             <span v-if="smAndDown" class="text-body-2">{{ new Date(scantron.timeStarted).toLocaleString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false }) }}</span>
@@ -59,6 +63,7 @@ import { useDisplay } from "vuetify"
 
 import ShareMenu from './ShareMenu.vue'
 
+const emit = defineEmits(['selected'])
 const { $api } = getCurrentInstance().appContext.config.globalProperties
 const { smAndDown } = useDisplay()
 const store = useAppStore()
