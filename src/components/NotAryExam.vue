@@ -91,7 +91,7 @@
 <script setup>
 import * as cheerio from 'cheerio'
 import { useAppStore } from '@/store/app'
-import { ref, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject } from 'vue'
+import { ref, watch, computed, onMounted, getCurrentInstance, onBeforeUnmount, inject } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useAuth0 } from '@auth0/auth0-vue'
 
@@ -181,7 +181,7 @@ function submit() {
         store.states[store.activeState].scantron.score.pass = true
     }
     store.saveScantron()
-    submitted.value = true
+    store.states[store.activeState].scantron.submitted = true
     emit('finished')
 }
 function shuffleArray(array) {
@@ -253,4 +253,5 @@ onMounted(() => {
 onBeforeUnmount(() => {
     clearInterval(interval.value)
 })
+watch(reset, () => reset())
 </script>

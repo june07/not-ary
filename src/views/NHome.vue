@@ -18,7 +18,7 @@ const finished = ref(false)
 const { smAndDown } = useDisplay()
 
 function retest() {
-    finished.value = false
     reset.value = true
+    finished.value = false
 }
 </script>
