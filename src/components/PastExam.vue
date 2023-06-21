@@ -1,7 +1,13 @@
 <template>
     <v-container class="h-100 d-flex justify-center" :class="{ 'my-0 py-0': smAndDown }" v-if="scantron">
         <v-sheet width="100%">
-            <div class="text-overline d-flex align-center text-no-wrap">exam {{ examId }}<v-divider class="ml-2"></v-divider></div>
+            <div class="text-overline d-flex align-center text-no-wrap">exam {{ examId }}<v-divider class="ml-2"></v-divider>
+                <v-btn @click="emit('close')" variant="text" size="small">close</v-btn>
+            </div>
+            <v-chip class="d-flex justify-end mr-16" variant="tonal" :size="smAndDown ? 'small' : ''" label>summary<v-icon end icon="summarize" color="primary-lighten-3" :class="!smAndDown ? 'my-2 mr-2' : ''"></v-icon></v-chip>
+            <p class="ml-16">You {{ pass ? 'passed' : 'failed' }} practice exam <span class="text-overline">{{ examId }}</span> started on {{ startDate }} at {{ startTime }}, with {{ right }}/{{ totalExamQuestions }} correct answers for an overall score of <span :class="percent > 90 ? 'text-green' : 'text-red'">{{ percent }}%</span>.</p>
+            <p class="ml-16 my-6">Review your incorrect choices below and learn from your mistakes.</p>
+            <v-chip class="d-flex justify-end mr-16 mt-4" variant="tonal" :size="smAndDown ? 'small' : ''" label>review<v-icon end icon="fact_check" color="primary-lighten-3" :class="!smAndDown ? 'my-2 mr-2' : ''"></v-icon></v-chip>
             <div class="wrong" v-for="(wrongAnswer, id) of wrongAnswers" :index="id">
                 <div v-if="getQuestion(id).order" class="text-overline d-flex align-center text-no-wrap ml-16">Question #{{ getQuestion(id).order }}</div>
                 <v-radio-group :model-value="wrongAnswer" readonly>
@@ -17,6 +23,7 @@
                     </div>
                 </v-radio-group>
             </div>
+            <v-btn @click="emit('close')" variant="tonal">close</v-btn>
         </v-sheet>
     </v-container>
 </template>
@@ -30,7 +37,7 @@
 }
 </style>
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useDisplay } from "vuetify"
 import Hashids from 'hashids'
 
@@ -39,7 +46,12 @@ const props = defineProps({
     scantron: Object
 })
 const { smAndDown } = useDisplay()
+const startDate = computed(() => new Date(props.scantron?.timeStarted).toLocaleDateString())
+const startTime = computed(() => new Date(props.scantron?.timeStarted).toLocaleTimeString())
+const percent = computed(() => props.scantron?.score.percent)
+const right = computed(() => props.scantron?.score.right)
 const totalExamQuestions = computed(() => props.scantron?.totalExamQuestions)
+const pass = computed(() => props.scantron?.score.pass)
 const examId = computed(() => hashids.encode(props.scantron?.timeStarted))
 const wrongAnswers = computed(() => props.scantron?.answers && Object.entries(props.scantron.answers)
     .reduce((wrongAnswers, kv) => {
@@ -59,4 +71,5 @@ const getOptions = (id) => {
         ...options.wrong.map(wrong => ({ wrong }))
     ] : undefined
 }
+const emit = defineEmits(['close'])
 </script>
