@@ -208,7 +208,7 @@ function parse(data) {
         question: $('.kg-toggle-heading-text').text(),
         options: {
             wrong: $('.kg-toggle-content > ul > li').filter((index, el) => !$(el).find('strong').length).get().map(el => $(el).text()),
-            right: $('.kg-toggle-content > ul > li > strong > em').text() || $('.kg-toggle-content > ul > li > em > strong').text()
+            right: $('.kg-toggle-content > ul > li > strong > em').text() || $('.kg-toggle-content > ul > li > em > strong').text() || $('.kg-toggle-content > ul > li > strong').text()
         },
         image: $('img').attr('src'),
         callout: $('.kg-callout-text').text()
