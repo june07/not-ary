@@ -32,7 +32,7 @@
                     <div class="d-flex align-center">
                         <v-list-item-title class="text-capitalize mr-4">exam length</v-list-item-title>
                         <v-list-item-action end>
-                            <v-text-field v-model="store.examLength" density="compact" hide-details variant="outlined"></v-text-field>
+                            <v-text-field v-model="store.examLength" density="compact" hide-details variant="outlined" style="min-width: 3ch;"></v-text-field>
                         </v-list-item-action>
                     </div>
                     <template v-slot:prepend>
