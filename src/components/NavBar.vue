@@ -20,7 +20,7 @@
                     <v-icon color="primary-lighten-3" icon="settings"></v-icon>
                 </v-btn>
             </template>
-            <v-list nav>
+            <v-list nav min-width="275px">
                 <v-list-subheader class="text-overline">settings</v-list-subheader>
                 <v-list-item @click="store.showAnswers = !store.showAnswers">
                     <v-list-item-title class="text-capitalize">{{ store.showAnswers ? 'hide answers' : 'show answers' }}</v-list-item-title>
@@ -32,7 +32,7 @@
                     <div class="d-flex align-center">
                         <v-list-item-title class="text-capitalize mr-4">exam length</v-list-item-title>
                         <v-list-item-action end>
-                            <v-text-field v-model="store.examLength" density="compact" hide-details variant="outlined" style="min-width: 3ch;"></v-text-field>
+                            <v-text-field v-model="store.examLength" density="compact" hide-details variant="outlined"></v-text-field>
                         </v-list-item-action>
                     </div>
                     <template v-slot:prepend>
