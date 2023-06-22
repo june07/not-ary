@@ -9,7 +9,10 @@
             <ul :class="{ 'mx-2': smAndDown }">
                 <li>Full length exam based on official <a :href="handbookURL" rel="noopener" target="_blank">Notary Public Handbook</a></li>
                 <li>Easy to reference, highlighted, text-to-speech snippets from the handbook for each question</li>
-                <li>Take the exam 3 times FREE without registering, and unlimited times with <a href="#" @click="signup">FREE registration</a></li>
+                <li>Take the exam 3 times FREE without registering, and <span class="text-uppercase">unlimited</span> times with
+                    <a v-if="!isAuthenticated" href="#" @click="signup">FREE registration</a>
+                    <span v-else>FREE registration</span>
+                </li>
                 <li>Timed exam just like the real thing so you can measure your progress</li>
                 <li>See correct answers as you go or wait until the end</li>
                 <li>Much more...</li>
