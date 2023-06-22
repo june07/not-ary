@@ -32,7 +32,7 @@
                     <div class="d-flex align-center">
                         <v-list-item-title class="text-capitalize mr-4">exam length</v-list-item-title>
                         <v-list-item-action end>
-                            <v-text-field id="exam-length" v-model="store.examLength" density="compact" hide-details variant="outlined"></v-text-field>
+                            <v-text-field style="width: 7ch" id="exam-length" v-model="store.examLength" density="compact" hide-details variant="outlined"></v-text-field>
                         </v-list-item-action>
                     </div>
                     <template v-slot:prepend>
@@ -118,9 +118,6 @@
 <style scoped>
 .mobile {
     max-width: fit-content;
-}
-:deep() #exam-length.v-field__input {
-    padding-inline-start: 6px;
 }
 </style>
 <script>
