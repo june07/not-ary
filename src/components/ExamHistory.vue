@@ -52,7 +52,7 @@
                             <span v-else>{{ new Date(scantron.timeFinished).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) }}</span>
                         </td>
                         <td :class="{ 'pa-2 text-body-2': smAndDown }">{{ formatTime((scantron.timeFinished - scantron.timeStarted) / 1000) }}</td>
-                        <td :class="{ 'pa-2 text-body-2': smAndDown }">{{ scantron.score.right }}/{{ totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
+                        <td :class="{ 'pa-2 text-body-2': smAndDown }">{{ scantron.score.right }}/{{ scantron.totalExamQuestions }} <sup :class="scantron.score.pass ? 'text-green' : 'text-red'">({{ scantron.score.percent }}%)</sup></td>
                     </tr>
                 </tbody>
             </v-table>
@@ -76,7 +76,6 @@ const { $api } = getCurrentInstance().appContext.config.globalProperties
 const { smAndDown } = useDisplay()
 const store = useAppStore()
 const scantrons = computed(() => store.states[store.activeState].examsTaken)
-const totalExamQuestions = computed(() => store.states[store.activeState].scantron.totalExamQuestions)
 
 function formatTime(timeInSeconds) {
     const seconds = Math.floor(timeInSeconds % 60)
