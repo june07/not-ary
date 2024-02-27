@@ -10,7 +10,8 @@
             <v-chip class="d-flex justify-end mr-16 mt-4" variant="tonal" :size="smAndDown ? 'small' : ''" label>review<v-icon end icon="fact_check" color="primary-lighten-3" :class="!smAndDown ? 'my-2 mr-2' : ''"></v-icon></v-chip>
             <div class="wrong" v-for="(wrongAnswer, id) of wrongAnswers" :index="id">
                 <div v-if="getQuestion(id).order" class="text-overline d-flex align-center text-no-wrap ml-16">Question #{{ getQuestion(id).order }}</div>
-                <v-radio-group :model-value="wrongAnswer" readonly>
+                <div class="my-2 ml-8 font-weight-bold">{{ wrongAnswer.question }}</div>
+                <v-radio-group :model-value="wrongAnswer.text" readonly>
                     <div class="d-flex align-center" v-for="option in getOptions(id)">
                         <v-icon :color="Object.keys(option)[0] === 'right' ? 'green' : 'red'" :icon="Object.keys(option)[0] === 'right' ? 'check_box' : 'disabled_by_default'"></v-icon>
                         <v-radio :class="{ 'mobile-radio': smAndDown }" :value="Object.values(option)[0]" color="red">
@@ -57,11 +58,13 @@ const wrongAnswers = computed(() => props.scantron?.answers && Object.entries(pr
     .reduce((wrongAnswers, kv) => {
         const id = kv[0]
         const answer = kv[1]
-        const wrong = Object.keys(answer)[0]
+        const matchingQuestion = props.scantron.questions.find(q => q.id === id)
 
         if (Object.keys(answer)[0] !== 'wrong') return wrongAnswers
-        return { ...wrongAnswers, [id]: Object.values(answer)[0] }
+        return { ...wrongAnswers, [id]: { ...matchingQuestion, text: kv[1].wrong } }
     }, {}))
+
+console.log(wrongAnswers)
 const questions = computed(() => props.scantron.questions)
 const getQuestion = (id) => questions.value.find(q => q.id === id)
 const getOptions = (id) => {
