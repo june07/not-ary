@@ -7,7 +7,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from "vuetify"
-import { useAppStore } from '@/store/app'
 
 import NotAryExam from '../components/NotAryExam.vue'
 import ExamResults from '../components/ExamResults.vue'
