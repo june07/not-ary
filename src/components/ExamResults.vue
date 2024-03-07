@@ -19,20 +19,23 @@
 
         <div class="text-no-wrap mt-2">Please Share<share-menu icon size="small"></share-menu></div>
         <!-- <router-link style="text-decoration: none" to="/support"><span class="text-overline text-red mr-2">Support Not-Ary.com</span><v-icon icon="toll" color="black" size="small"></v-icon></router-link> -->
-        <support-sheet />
+        <support-sheet v-if="!smAndDown" />
         <exam-history @scantrons="scantrons"></exam-history>
 
         <v-btn @click="emit('retest')" class="mt-8">Test Again</v-btn>
     </v-container>
 </template>
+
 <script setup>
 import { useAppStore } from '@/store/app'
-import { ref, computed, inject, onBeforeUnmount, onMounted } from 'vue'
+import { computed, inject, onBeforeUnmount } from 'vue'
+import { useDisplay } from 'vuetify/lib/framework.mjs'
 
 import ExamHistory from './ExamHistory.vue'
 import ShareMenu from './ShareMenu.vue'
 import SupportSheet from '@/components/SupportSheet.vue'
 
+const { smAndDown } = useDisplay()
 const emit = defineEmits(['retest'])
 
 const signup = inject("signup")

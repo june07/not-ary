@@ -19,8 +19,8 @@
             </ul>
             </p>
             <v-btn v-if="freeExamsRemaining || isAuthenticated" @click="start" class="mt-16">start exam</v-btn>
-            <v-btn v-else @click="signup" class="text-capitalize">create free account / sign in</v-btn>
-            <support-sheet />
+            <v-btn v-else @click="signup" class="text-capitalize my-4">create free account / sign in</v-btn>
+            <support-sheet v-if="!smAndDown" />
         </div>
         <div v-else>
             <v-row>
