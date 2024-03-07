@@ -46,7 +46,7 @@ const links = [
     // { name: "Credits", click: () => this.$emit('credits') }
 ]
 const secondaryLinks = [
-    { name: "Support Not-Ary.com", to: "/support" },
+    // { name: "Support Not-Ary.com", to: "/support" },
 ]
 const props = defineProps({
     order: String
